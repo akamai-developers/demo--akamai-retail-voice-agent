@@ -9,8 +9,20 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import Response
 
+from .codec import prepare_codec
 from .media import MAX_AUDIO, validate_audio
-from .settings import GPUSettings
+from .settings import GPUSettings, model_manifest
+
+
+def bind_local_tokenizers(config, model_id, directory):
+    """Resolve the checkpoint's external tokenizers from the pinned local artifact."""
+    if not (directory / "tokenizer_config.json").is_file():
+        raise RuntimeError("Pinned speech tokenizer is missing; run download-models")
+    for tokenizer in config.values():
+        if tokenizer.get("_target_") in {"AutoTokenizer", "T5Tokenizer"}:
+            if tokenizer.get("pretrained_model") != model_id:
+                raise RuntimeError("Speech checkpoint requests an unpinned tokenizer")
+            tokenizer["pretrained_model"] = str(directory)
 
 
 class NoSpeech(Exception):
@@ -26,6 +38,7 @@ class SpeechRuntime:
     def load(self):
         import torch
         from nemo.collections.asr.models import ASRModel
+        from nemo.collections.tts.models.audio_codec import AudioCodecModel
         from nemo.collections.tts.models.magpietts import MagpieTTSModel
 
         if not torch.cuda.is_available():
@@ -34,7 +47,19 @@ class SpeechRuntime:
             raise RuntimeError("Pinned speech artifacts are missing")
         asr = ASRModel.restore_from(str(self.settings.artifact("asr"))).cuda().eval()
         cfg = MagpieTTSModel.restore_from(str(self.settings.artifact("tts")), return_config=True)
-        cfg.codecmodel_path = str(self.settings.artifact("codec"))
+        bind_local_tokenizers(
+            cfg.text_tokenizers,
+            model_manifest()["models"]["tts_tokenizer"]["id"],
+            self.settings.artifact("tts_tokenizer"),
+        )
+        cfg.codecmodel_path = str(
+            prepare_codec(
+                self.settings.artifact("codec"),
+                self.settings.runtime_dir,
+                AudioCodecModel,
+                model_manifest()["runtime"]["nemo_commit"],
+            )
+        )
         tts = (
             MagpieTTSModel.restore_from(
                 str(self.settings.artifact("tts")), override_config_path=cfg

@@ -21,6 +21,16 @@
     "vlm": {
       "id": "nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-FP8",
       "revision": "0acd4b1c237eab45d3977b1b46631919e9a75774"
+    },
+    "tts_tokenizer": {
+      "id": "google/byt5-small",
+      "revision": "68377bdc18a2ffec8a0533fef03b1c513a4dd49d",
+      "allow_patterns": [
+        "config.json",
+        "tokenizer_config.json",
+        "special_tokens_map.json",
+        "README.md"
+      ]
     }
   },
   "runtime": {

@@ -12,6 +12,7 @@ Model weights are downloaded separately and retain their own licenses:
 - [Magpie TTS](https://huggingface.co/nvidia/magpie_tts_multilingual_357m)
 - [NeMo Nano Codec](https://huggingface.co/nvidia/nemo-nano-codec-22khz-1.89kbps-21.5fps)
 - [Nemotron 3 Nano Omni FP8](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-FP8)
+- [ByT5 tokenizer](https://huggingface.co/google/byt5-small/tree/68377bdc18a2ffec8a0533fef03b1c513a4dd49d) (Apache-2.0; tokenizer files only)
 - [FLUX.2 klein 4B](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B)
 
 Model revisions and runtime container digests are pinned in `src/retail_voice/profiles/nvidia-one-gpu.json`. The optional image model revision is pinned in `src/retail_voice/tryon.py`. Review the license at the pinned revision before accepting a download.

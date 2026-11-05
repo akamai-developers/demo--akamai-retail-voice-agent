@@ -41,7 +41,9 @@ python3.12 scripts/gpu.py configure --site gpu-1 --region YOUR_LINODE_REGION \
 python3.12 scripts/gpu.py install --accept-model-licenses
 ```
 
-The photo must be a supported image, under 2 MB and 4 megapixels. It stays on the host and is used only for the configured retailer. The repository includes no person photo. Try-on is a generated appearance preview, not a size or fit prediction. The app checks stock before generating a preview and retains the selected variant when adding it to the cart.
+Use a JPEG or PNG photo under 2 MB and 4 megapixels. Convert WebP or other formats before configuration. It stays on the host and is used only for the configured retailer. The repository includes no person photo. Try-on is a generated appearance preview, not a size or fit prediction. The app checks stock before generating a preview and retains the selected variant when adding it to the cart.
+
+The download includes pinned tokenizer files needed by the speech checkpoint. On its first start, the speech worker derives a private inference codec without training-only components. The pinned source checkpoint stays unchanged. The derived checkpoint and its hash receipt live in `.local/runtime/` and are verified before reuse. Model serving remains offline after installation.
 
 ## 3. Start services
 

@@ -157,7 +157,9 @@ def download(settings, accepted):
             repo_id=model["id"],
             revision=model["revision"],
             local_dir=settings.model_root / key,
-            allow_patterns=[model["file"], "LICENSE*"] if "file" in model else None,
+            allow_patterns=[model["file"], "LICENSE*"]
+            if "file" in model
+            else model.get("allow_patterns"),
         )
     hashes = {}
     for key in ("asr", "tts", "codec"):
