@@ -1,0 +1,36 @@
+{
+    admin off
+    email {$ACME_EMAIL}
+    order rate_limit before basic_auth
+}
+
+{$DEMO_DOMAIN} {
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        -Server
+    }
+    rate_limit {
+        zone turns {
+            match {
+                method POST
+                path /v1/sessions /v1/sessions/*
+            }
+            key {remote_host}
+            events 30
+            window 1m
+        }
+        zone requests {
+            key {remote_host}
+            events 200
+            window 10s
+        }
+    }
+    @control path /admin/* /internal/*
+    respond @control 404
+    request_body {
+        max_size 3MB
+    }
+    reverse_proxy 127.0.0.1:8765 {
+        flush_interval -1
+    }
+}

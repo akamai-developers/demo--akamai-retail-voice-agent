@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "session_id",
+    "session_token",
+    "tenant",
+    "site",
+    "mode",
+    "reason",
+    "reservation_seconds_remaining",
+    "idle_timeout_seconds",
+    "max_turns",
+    "retained_sessions"
+  ],
+  "properties": {
+    "session_id": {
+      "type": "string"
+    },
+    "session_token": {
+      "type": "string"
+    },
+    "tenant": {
+      "type": "string"
+    },
+    "site": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "mock",
+        "nvidia"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "reservation_seconds_remaining": {
+      "type": "number",
+      "minimum": 0
+    },
+    "idle_timeout_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "max_turns": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "retained_sessions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "used",
+        "max"
+      ],
+      "properties": {
+        "used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

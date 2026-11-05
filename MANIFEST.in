@@ -1,0 +1,12 @@
+include README.md Makefile requirements.lock.txt .env.example SECURITY.md CONTRIBUTING.md THIRD_PARTY_NOTICES.md LICENSE
+recursive-include contracts *.json
+recursive-include docs *.md *.json
+recursive-include scripts *.py
+recursive-include tests *.py *.cjs *.mjs
+recursive-include tools *.py
+recursive-include deploy *.txt *.sh Caddyfile Dockerfile
+recursive-include src/retail_voice/web *.html *.css *.js *.mjs *.svg *.woff2 *.ttf *.txt
+recursive-include src/retail_voice/data *.json *.jpg
+global-exclude *.pyc
+prune .local
+prune artifacts

@@ -1,0 +1,2 @@
+# Keep bundled third-party font licenses verbatim.
+src/retail_voice/web/fonts/OFL-*.txt -whitespace

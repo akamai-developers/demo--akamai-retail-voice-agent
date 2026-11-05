@@ -1,0 +1,492 @@
+{
+  "date_utc": "2026-11-05",
+  "tool": "pip-audit 2.10.1",
+  "gateway_lock_sha256": "6e55d6c638631a255eff830f98a7b679fe47323828e706aff8717f82ddd53ff2",
+  "reports": {
+    "gateway": {
+      "coverage": "Complete gateway and development dependency lock",
+      "packages": 71,
+      "findings": [],
+      "skipped": []
+    },
+    "speech": {
+      "coverage": "Linux Python 3.12 resolution including the pinned NeMo source; source code and container OS packages are outside this scan",
+      "packages": 188,
+      "findings": [
+        {
+          "package": "fsspec",
+          "version": "2025.12.0",
+          "advisories": [
+            {
+              "id": "PYSEC-2026-4217",
+              "aliases": [
+                "GHSA-27vj-qcqg-25rc",
+                "CVE-2026-104851"
+              ],
+              "fix_versions": [
+                "2026.6.0"
+              ]
+            }
+          ]
+        },
+        {
+          "package": "hydra-core",
+          "version": "1.3.2",
+          "advisories": [
+            {
+              "id": "PYSEC-2026-3850",
+              "aliases": [
+                "GHSA-2cp2-2r3c-7p7r",
+                "CVE-2026-68508"
+              ],
+              "fix_versions": [
+                "1.3.4"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-4221",
+              "aliases": [
+                "GHSA-c3wx-c55w-pxjq",
+                "CVE-2026-106441"
+              ],
+              "fix_versions": [
+                "1.3.6",
+                "1.4.0.dev9"
+              ]
+            }
+          ]
+        },
+        {
+          "package": "lightning",
+          "version": "2.4.0",
+          "advisories": [
+            {
+              "id": "PYSEC-2026-3972",
+              "aliases": [
+                "CVE-2026-31221",
+                "GHSA-75m9-98v2-hjpm"
+              ],
+              "fix_versions": []
+            },
+            {
+              "id": "PYSEC-2026-3624",
+              "aliases": [
+                "GHSA-qqmf-gpg7-g8gw",
+                "PYSEC-2026-3967",
+                "CVE-2026-58659"
+              ],
+              "fix_versions": [
+                "2.6.6"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-3624",
+              "aliases": [
+                "PYSEC-2026-3967",
+                "GHSA-qqmf-gpg7-g8gw",
+                "CVE-2026-58659"
+              ],
+              "fix_versions": [
+                "2.6.6"
+              ]
+            }
+          ]
+        },
+        {
+          "package": "torch",
+          "version": "2.8.0",
+          "advisories": [
+            {
+              "id": "PYSEC-2025-206",
+              "aliases": [
+                "BIT-pytorch-2025-55554",
+                "CVE-2025-55554"
+              ],
+              "fix_versions": [
+                "2.9.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2025-204",
+              "aliases": [
+                "BIT-pytorch-2025-55552",
+                "CVE-2025-55552"
+              ],
+              "fix_versions": [
+                "2.9.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-139",
+              "aliases": [
+                "CVE-2026-4538",
+                "BIT-pytorch-2026-4538"
+              ],
+              "fix_versions": []
+            },
+            {
+              "id": "PYSEC-2025-203",
+              "aliases": [
+                "CVE-2025-55551",
+                "BIT-pytorch-2025-55551"
+              ],
+              "fix_versions": [
+                "2.9.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2025-193",
+              "aliases": [
+                "BIT-pytorch-2025-2999",
+                "CVE-2025-2999",
+                "GHSA-vgrw-7cvw-pwgx"
+              ],
+              "fix_versions": [
+                "2.9.1"
+              ]
+            },
+            {
+              "id": "PYSEC-2025-194",
+              "aliases": [
+                "BIT-pytorch-2025-3000",
+                "CVE-2025-3000",
+                "GHSA-rrmf-rvhw-rf47"
+              ],
+              "fix_versions": [
+                "2.13.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2025-195",
+              "aliases": [
+                "GHSA-qfhq-4f3w-5fph",
+                "CVE-2025-3001",
+                "BIT-pytorch-2025-3001"
+              ],
+              "fix_versions": [
+                "2.10.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-2286",
+              "aliases": [
+                "CVE-2026-24747",
+                "BIT-pytorch-2026-24747",
+                "GHSA-63cw-57p8-fm3p"
+              ],
+              "fix_versions": [
+                "2.10.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-1856",
+              "aliases": [
+                "GHSA-63cw-57p8-fm3p",
+                "BIT-pytorch-2026-24747",
+                "CVE-2026-24747",
+                "PYSEC-2026-2286"
+              ],
+              "fix_versions": [
+                "2.10.0"
+              ]
+            }
+          ]
+        }
+      ],
+      "skipped": [
+        {
+          "name": "nemo-toolkit",
+          "skip_reason": "URL requirements cannot be pinned to a specific package version"
+        },
+        {
+          "name": "nltk",
+          "skip_reason": "URL requirements cannot be pinned to a specific package version"
+        }
+      ]
+    },
+    "tryon": {
+      "coverage": "Linux Python 3.12 resolution of gateway and image-worker dependencies; CUDA wheel installation not executed",
+      "packages": 97,
+      "findings": [
+        {
+          "package": "accelerate",
+          "version": "1.12.0",
+          "advisories": [
+            {
+              "id": "PYSEC-2026-3804",
+              "aliases": [
+                "GHSA-4j2p-28q2-5m79",
+                "CVE-2026-69112"
+              ],
+              "fix_versions": []
+            }
+          ]
+        },
+        {
+          "package": "diffusers",
+          "version": "0.37.1",
+          "advisories": [
+            {
+              "id": "PYSEC-2026-2446",
+              "aliases": [
+                "GHSA-7wx4-6vff-v64p",
+                "CVE-2026-45804"
+              ],
+              "fix_versions": [
+                "0.38.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-40",
+              "aliases": [
+                "CVE-2026-44513",
+                "GHSA-98h9-4798-4q5v"
+              ],
+              "fix_versions": [
+                "0.38.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-40",
+              "aliases": [
+                "CVE-2026-44513",
+                "GHSA-98h9-4798-4q5v"
+              ],
+              "fix_versions": [
+                "0.38.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-41",
+              "aliases": [
+                "GHSA-j7w6-vpvq-j3gm",
+                "CVE-2026-44827"
+              ],
+              "fix_versions": [
+                "0.38.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-2446",
+              "aliases": [
+                "GHSA-7wx4-6vff-v64p",
+                "CVE-2026-45804"
+              ],
+              "fix_versions": [
+                "0.38.0"
+              ]
+            }
+          ]
+        },
+        {
+          "package": "torch",
+          "version": "2.8.0",
+          "advisories": [
+            {
+              "id": "PYSEC-2025-206",
+              "aliases": [
+                "BIT-pytorch-2025-55554",
+                "CVE-2025-55554"
+              ],
+              "fix_versions": [
+                "2.9.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2025-204",
+              "aliases": [
+                "BIT-pytorch-2025-55552",
+                "CVE-2025-55552"
+              ],
+              "fix_versions": [
+                "2.9.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-139",
+              "aliases": [
+                "CVE-2026-4538",
+                "BIT-pytorch-2026-4538"
+              ],
+              "fix_versions": []
+            },
+            {
+              "id": "PYSEC-2025-203",
+              "aliases": [
+                "CVE-2025-55551",
+                "BIT-pytorch-2025-55551"
+              ],
+              "fix_versions": [
+                "2.9.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2025-193",
+              "aliases": [
+                "CVE-2025-2999",
+                "GHSA-vgrw-7cvw-pwgx",
+                "BIT-pytorch-2025-2999"
+              ],
+              "fix_versions": [
+                "2.9.1"
+              ]
+            },
+            {
+              "id": "PYSEC-2025-194",
+              "aliases": [
+                "BIT-pytorch-2025-3000",
+                "CVE-2025-3000",
+                "GHSA-rrmf-rvhw-rf47"
+              ],
+              "fix_versions": [
+                "2.13.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2025-195",
+              "aliases": [
+                "BIT-pytorch-2025-3001",
+                "GHSA-qfhq-4f3w-5fph",
+                "CVE-2025-3001"
+              ],
+              "fix_versions": [
+                "2.10.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-2286",
+              "aliases": [
+                "CVE-2026-24747",
+                "GHSA-63cw-57p8-fm3p",
+                "BIT-pytorch-2026-24747"
+              ],
+              "fix_versions": [
+                "2.10.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-1856",
+              "aliases": [
+                "CVE-2026-24747",
+                "PYSEC-2026-2286",
+                "BIT-pytorch-2026-24747",
+                "GHSA-63cw-57p8-fm3p"
+              ],
+              "fix_versions": [
+                "2.10.0"
+              ]
+            }
+          ]
+        },
+        {
+          "package": "transformers",
+          "version": "4.57.3",
+          "advisories": [
+            {
+              "id": "PYSEC-2025-217",
+              "aliases": [
+                "CVE-2025-14929"
+              ],
+              "fix_versions": []
+            },
+            {
+              "id": "PYSEC-2026-2288",
+              "aliases": [
+                "CVE-2026-1839",
+                "GHSA-69w3-r845-3855"
+              ],
+              "fix_versions": [
+                "5.0.0rc3"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-2289",
+              "aliases": [
+                "CVE-2026-4372",
+                "GHSA-29pf-2h5f-8g72"
+              ],
+              "fix_versions": [
+                "5.3.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-2290",
+              "aliases": [
+                "GHSA-fgcw-684q-jj6r",
+                "CVE-2026-5241"
+              ],
+              "fix_versions": []
+            },
+            {
+              "id": "PYSEC-2026-2288",
+              "aliases": [
+                "CVE-2026-1839",
+                "GHSA-69w3-r845-3855"
+              ],
+              "fix_versions": [
+                "5.0.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-2289",
+              "aliases": [
+                "CVE-2026-4372",
+                "GHSA-29pf-2h5f-8g72"
+              ],
+              "fix_versions": [
+                "5.3.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-2290",
+              "aliases": [
+                "GHSA-fgcw-684q-jj6r",
+                "CVE-2026-5241"
+              ],
+              "fix_versions": [
+                "5.5.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-3929",
+              "aliases": [
+                "GHSA-xrqw-3rrv-vx5w",
+                "CVE-2026-9856"
+              ],
+              "fix_versions": [
+                "5.10.0"
+              ]
+            },
+            {
+              "id": "PYSEC-2026-4174",
+              "aliases": [
+                "GHSA-x9r9-c232-4q39",
+                "CVE-2026-80047"
+              ],
+              "fix_versions": []
+            }
+          ]
+        }
+      ],
+      "skipped": []
+    }
+  },
+  "release_status": "GPU dependency remediation and hardware validation required",
+  "upgrade_probe": {
+    "source_revision": "f6f61caaab4b13c94c787e7c4b75ab24418a79ed",
+    "latest_direct_package_audit": "No known vulnerabilities found",
+    "candidate_versions": {
+      "torch": "2.15.0",
+      "torchaudio": "2.11.1",
+      "diffusers": "0.42.1",
+      "transformers": "5.22.1",
+      "accelerate": "1.15.0",
+      "fsspec": "2026.9.0",
+      "hydra-core": "1.3.8",
+      "lightning": "2.6.6"
+    },
+    "resolution": "failed",
+    "conflict": "NeMo ASR requires lightning>2.2.1,<=2.4.0; the fixed candidate is lightning==2.6.6",
+    "changes_applied_to_gpu_profile": false
+  }
+}

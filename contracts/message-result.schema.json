@@ -1,0 +1,417 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Shopping message result",
+  "description": "GET /v1/sessions/{id}/turns/{turn}/result for a turn from POST /v1/sessions/{id}/messages. Cards, prices, images and stock facts are resolved by the server from catalog ids.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "turn_id",
+    "trace_id",
+    "mode",
+    "site",
+    "status",
+    "answer",
+    "transcript",
+    "input_source",
+    "product_cards",
+    "selected_product_id",
+    "selected_variant_id",
+    "display_revision",
+    "catalog_version",
+    "clarification",
+    "recommended_product_ids",
+    "stock_checks",
+    "cart",
+    "audio_path",
+    "audio_kind"
+  ],
+  "properties": {
+    "turn_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "trace_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "mode": {
+      "enum": [
+        "mock",
+        "nvidia"
+      ]
+    },
+    "site": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "failed"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "queued_ms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "answer": {
+      "type": "string",
+      "maxLength": 1200
+    },
+    "transcript": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "input_source": {
+      "enum": [
+        "audio",
+        "text"
+      ]
+    },
+    "product_cards": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "$ref": "#/$defs/card"
+      }
+    },
+    "selected_product_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "selected_variant_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The variant committed with the selected product: the one a verified stock check or an added cart line settled. It stays on turns without a stock check, so a screen can keep that variant's photo, and clears when the selection changes. A failed turn returns the committed value unchanged."
+    },
+    "display_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "catalog_version": {
+      "type": "string"
+    },
+    "clarification": {
+      "type": "boolean"
+    },
+    "recommended_product_ids": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "stock_checks": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "$ref": "#/$defs/stock"
+      },
+      "description": "Exact requested or confirmed product, variant and store facts from this turn. Ambiguous or mismatched stock turns return an empty array and clarification; stock speech is built from the matching fact before TTS."
+    },
+    "cart": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/cart_item"
+      },
+      "description": "The session cart after this turn: line items committed with the conversation, from allowed add_to_cart results only. Memory only; empty for a new session and after End. A failed turn returns the committed cart unchanged."
+    },
+    "audio_path": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^/v1/sessions/[a-f0-9]+/turns/[a-f0-9]+/audio$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "audio_kind": {
+      "enum": [
+        "test_tone",
+        "synthesized_speech",
+        null
+      ]
+    },
+    "spoken_answer": {
+      "type": "string",
+      "maxLength": 1200,
+      "description": "Text used for speech synthesis, before number normalization. Pure searches use a concise catalog-grounded summary; answer retains the full display reply."
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_id",
+        "color",
+        "kind",
+        "label",
+        "note",
+        "image_path"
+      ],
+      "properties": {
+        "product_id": {
+          "$ref": "#/$defs/id"
+        },
+        "color": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "live",
+            "prepared"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "image_path": {
+          "type": "string",
+          "pattern": "^/v1/sessions/[a-f0-9]+/turns/[a-f0-9]+/preview$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "image_path": {
+      "type": "string",
+      "pattern": "^/v1/catalog/images/img-[a-z0-9][a-z0-9-]{0,63}$"
+    },
+    "card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_id",
+        "name",
+        "category",
+        "description",
+        "price_minor",
+        "price_display",
+        "image_path",
+        "image_alt",
+        "colors",
+        "sizes",
+        "variants"
+      ],
+      "properties": {
+        "product_id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "category": {
+          "enum": [
+            "jackets",
+            "rain-shells",
+            "fleeces",
+            "vests",
+            "hats",
+            "gloves"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "price_minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "price_display": {
+          "type": "string",
+          "pattern": "^\\$[0-9,]+\\.[0-9]{2}$"
+        },
+        "image_path": {
+          "$ref": "#/$defs/image_path"
+        },
+        "image_alt": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "colors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sizes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "XS",
+              "S",
+              "M",
+              "L",
+              "XL",
+              "OS"
+            ]
+          }
+        },
+        "variants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "variant_id",
+              "color",
+              "size",
+              "image_path"
+            ],
+            "properties": {
+              "variant_id": {
+                "$ref": "#/$defs/id"
+              },
+              "color": {
+                "type": "string"
+              },
+              "size": {
+                "enum": [
+                  "XS",
+                  "S",
+                  "M",
+                  "L",
+                  "XL",
+                  "OS"
+                ]
+              },
+              "image_path": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/image_path"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "cart_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_id",
+        "product_name",
+        "variant_id",
+        "color",
+        "size",
+        "price_minor",
+        "price_display",
+        "quantity"
+      ],
+      "properties": {
+        "product_id": {
+          "$ref": "#/$defs/id"
+        },
+        "product_name": {
+          "type": "string"
+        },
+        "variant_id": {
+          "$ref": "#/$defs/id"
+        },
+        "color": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string"
+        },
+        "price_minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "price_display": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        }
+      }
+    },
+    "stock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog_version",
+        "product_id",
+        "product_name",
+        "variant_id",
+        "color",
+        "size",
+        "store_id",
+        "store_name",
+        "quantity",
+        "in_stock",
+        "provenance"
+      ],
+      "properties": {
+        "catalog_version": {
+          "type": "string"
+        },
+        "product_id": {
+          "$ref": "#/$defs/id"
+        },
+        "product_name": {
+          "type": "string"
+        },
+        "variant_id": {
+          "$ref": "#/$defs/id"
+        },
+        "color": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string"
+        },
+        "store_id": {
+          "$ref": "#/$defs/id"
+        },
+        "store_name": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "in_stock": {
+          "type": "boolean"
+        },
+        "provenance": {
+          "const": "synthetic"
+        }
+      }
+    }
+  }
+}

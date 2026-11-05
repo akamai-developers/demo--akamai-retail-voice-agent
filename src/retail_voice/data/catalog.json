@@ -1,0 +1,527 @@
+{
+  "schema_version": 1,
+  "catalog_version": "2026.11.1",
+  "currency": "USD",
+  "retailers": [
+    {"tenant_id": "retailer-a", "name": "Northline Outfitters"},
+    {"tenant_id": "retailer-b", "name": "Harbor Supply"}
+  ],
+  "stores": [
+    {"tenant_id": "retailer-a", "store_id": "store-a", "name": "Northline Downtown", "timezone": "America/Denver"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "name": "Northline Riverside", "timezone": "America/Denver"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "name": "Harbor Supply Wharf", "timezone": "America/New_York"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "name": "Harbor Supply Market Street", "timezone": "America/New_York"}
+  ],
+  "products": [
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "jacket-a",
+      "name": "Ridgeline Rain Shell",
+      "description": "Lightweight waterproof shell with an adjustable hood.",
+      "category": "jackets",
+      "tags": ["rain", "lightweight", "waterproof", "hooded", "packable"],
+      "price_minor": 12900,
+      "image_ids": ["img-jacket-a-navy", "img-jacket-a-black"],
+      "variants": [
+        {"variant_id": "jacket-a-navy-m", "color": "navy", "size": "M", "image_id": "img-jacket-a-navy"},
+        {"variant_id": "jacket-a-navy-l", "color": "navy", "size": "L", "image_id": "img-jacket-a-navy"},
+        {"variant_id": "jacket-a-black-m", "color": "black", "size": "M", "image_id": "img-jacket-a-black"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-trailhead-softshell",
+      "name": "Trailhead Softshell Jacket",
+      "description": "Stretch softshell that blocks wind and light drizzle. Stand-up collar, no hood.",
+      "category": "jackets",
+      "tags": ["softshell", "wind", "stretch", "collar", "hiking"],
+      "price_minor": 14900,
+      "image_ids": ["img-a-trailhead-softshell-olive", "img-a-trailhead-softshell-gray"],
+      "variants": [
+        {"variant_id": "a-trailhead-softshell-olive-m", "color": "olive", "size": "M", "image_id": "img-a-trailhead-softshell-olive"},
+        {"variant_id": "a-trailhead-softshell-olive-l", "color": "olive", "size": "L", "image_id": "img-a-trailhead-softshell-olive"},
+        {"variant_id": "a-trailhead-softshell-gray-m", "color": "gray", "size": "M", "image_id": "img-a-trailhead-softshell-gray"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-summit-down-jacket",
+      "name": "Summit Down Jacket",
+      "description": "Warm 700-fill down jacket with a hood for cold, dry days.",
+      "category": "jackets",
+      "tags": ["warm", "insulated", "down", "winter", "hooded"],
+      "price_minor": 22900,
+      "image_ids": ["img-a-summit-down-jacket-black", "img-a-summit-down-jacket-red"],
+      "variants": [
+        {"variant_id": "a-summit-down-jacket-black-m", "color": "black", "size": "M", "image_id": "img-a-summit-down-jacket-black"},
+        {"variant_id": "a-summit-down-jacket-black-l", "color": "black", "size": "L", "image_id": "img-a-summit-down-jacket-black"},
+        {"variant_id": "a-summit-down-jacket-red-s", "color": "red", "size": "S", "image_id": "img-a-summit-down-jacket-red"},
+        {"variant_id": "a-summit-down-jacket-red-m", "color": "red", "size": "M", "image_id": "img-a-summit-down-jacket-red"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-city-commuter-jacket",
+      "name": "City Commuter Jacket",
+      "description": "Water-resistant city jacket with a hood and reflective trim.",
+      "category": "jackets",
+      "tags": ["rain", "water-resistant", "hooded", "reflective", "commuter"],
+      "price_minor": 17900,
+      "image_ids": ["img-a-city-commuter-jacket-charcoal", "img-a-city-commuter-jacket-navy"],
+      "variants": [
+        {"variant_id": "a-city-commuter-jacket-charcoal-s", "color": "charcoal", "size": "S", "image_id": "img-a-city-commuter-jacket-charcoal"},
+        {"variant_id": "a-city-commuter-jacket-charcoal-m", "color": "charcoal", "size": "M", "image_id": "img-a-city-commuter-jacket-charcoal"},
+        {"variant_id": "a-city-commuter-jacket-navy-m", "color": "navy", "size": "M", "image_id": "img-a-city-commuter-jacket-navy"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-downpour-packable",
+      "name": "Downpour Packable Shell",
+      "description": "Ultralight waterproof rain jacket that packs into its own pocket. Hooded.",
+      "category": "rain-shells",
+      "tags": ["rain", "jacket", "lightweight", "waterproof", "packable", "hooded"],
+      "price_minor": 8900,
+      "image_ids": ["img-a-downpour-packable-yellow", "img-a-downpour-packable-navy"],
+      "variants": [
+        {"variant_id": "a-downpour-packable-yellow-s", "color": "yellow", "size": "S", "image_id": "img-a-downpour-packable-yellow"},
+        {"variant_id": "a-downpour-packable-yellow-m", "color": "yellow", "size": "M", "image_id": "img-a-downpour-packable-yellow"},
+        {"variant_id": "a-downpour-packable-navy-m", "color": "navy", "size": "M", "image_id": "img-a-downpour-packable-navy"},
+        {"variant_id": "a-downpour-packable-navy-l", "color": "navy", "size": "L", "image_id": "img-a-downpour-packable-navy"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-stormline-pro-shell",
+      "name": "Stormline Pro Shell",
+      "description": "Three-layer waterproof, breathable rain jacket with a helmet-sized hood.",
+      "category": "rain-shells",
+      "tags": ["rain", "jacket", "waterproof", "breathable", "hooded", "alpine"],
+      "price_minor": 24900,
+      "image_ids": ["img-a-stormline-pro-shell-red", "img-a-stormline-pro-shell-black"],
+      "variants": [
+        {"variant_id": "a-stormline-pro-shell-red-m", "color": "red", "size": "M", "image_id": "img-a-stormline-pro-shell-red"},
+        {"variant_id": "a-stormline-pro-shell-red-l", "color": "red", "size": "L", "image_id": "img-a-stormline-pro-shell-red"},
+        {"variant_id": "a-stormline-pro-shell-black-l", "color": "black", "size": "L", "image_id": "img-a-stormline-pro-shell-black"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-drizzle-anorak",
+      "name": "Drizzle Anorak",
+      "description": "Pullover rain jacket with a half zip, a front pocket and a hood.",
+      "category": "rain-shells",
+      "tags": ["rain", "jacket", "lightweight", "pullover", "hooded", "packable"],
+      "price_minor": 6900,
+      "image_ids": ["img-a-drizzle-anorak-green", "img-a-drizzle-anorak-navy"],
+      "variants": [
+        {"variant_id": "a-drizzle-anorak-green-m", "color": "green", "size": "M", "image_id": "img-a-drizzle-anorak-green"},
+        {"variant_id": "a-drizzle-anorak-green-l", "color": "green", "size": "L", "image_id": "img-a-drizzle-anorak-green"},
+        {"variant_id": "a-drizzle-anorak-navy-m", "color": "navy", "size": "M", "image_id": "img-a-drizzle-anorak-navy"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-basecamp-fleece",
+      "name": "Basecamp Fleece Jacket",
+      "description": "Midweight full-zip fleece with a stand-up collar.",
+      "category": "fleeces",
+      "tags": ["fleece", "warm", "midweight", "collar", "layering"],
+      "price_minor": 7900,
+      "image_ids": ["img-a-basecamp-fleece-gray", "img-a-basecamp-fleece-navy"],
+      "variants": [
+        {"variant_id": "a-basecamp-fleece-gray-m", "color": "gray", "size": "M", "image_id": "img-a-basecamp-fleece-gray"},
+        {"variant_id": "a-basecamp-fleece-gray-l", "color": "gray", "size": "L", "image_id": "img-a-basecamp-fleece-gray"},
+        {"variant_id": "a-basecamp-fleece-navy-m", "color": "navy", "size": "M", "image_id": "img-a-basecamp-fleece-navy"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-sherpa-pullover",
+      "name": "Sherpa Fleece Pullover",
+      "description": "Warm high-pile fleece pullover with a half zip and a front pocket.",
+      "category": "fleeces",
+      "tags": ["fleece", "warm", "sherpa", "pullover", "collar"],
+      "price_minor": 9900,
+      "image_ids": ["img-a-sherpa-pullover-cream", "img-a-sherpa-pullover-brown"],
+      "variants": [
+        {"variant_id": "a-sherpa-pullover-cream-s", "color": "cream", "size": "S", "image_id": "img-a-sherpa-pullover-cream"},
+        {"variant_id": "a-sherpa-pullover-cream-m", "color": "cream", "size": "M", "image_id": "img-a-sherpa-pullover-cream"},
+        {"variant_id": "a-sherpa-pullover-brown-m", "color": "brown", "size": "M", "image_id": "img-a-sherpa-pullover-brown"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-grid-fleece-hoodie",
+      "name": "Grid Fleece Hoodie",
+      "description": "Light grid fleece hoodie that breathes on the trail.",
+      "category": "fleeces",
+      "tags": ["fleece", "lightweight", "grid", "hooded", "breathable", "hiking"],
+      "price_minor": 8900,
+      "image_ids": ["img-a-grid-fleece-hoodie-blue", "img-a-grid-fleece-hoodie-black"],
+      "variants": [
+        {"variant_id": "a-grid-fleece-hoodie-blue-m", "color": "blue", "size": "M", "image_id": "img-a-grid-fleece-hoodie-blue"},
+        {"variant_id": "a-grid-fleece-hoodie-blue-l", "color": "blue", "size": "L", "image_id": "img-a-grid-fleece-hoodie-blue"},
+        {"variant_id": "a-grid-fleece-hoodie-black-m", "color": "black", "size": "M", "image_id": "img-a-grid-fleece-hoodie-black"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-ridge-puffer-vest",
+      "name": "Ridge Puffer Vest",
+      "description": "Insulated puffer vest that packs small. No sleeves, high collar.",
+      "category": "vests",
+      "tags": ["vest", "warm", "insulated", "puffer", "packable", "collar"],
+      "price_minor": 9900,
+      "image_ids": ["img-a-ridge-puffer-vest-black", "img-a-ridge-puffer-vest-olive"],
+      "variants": [
+        {"variant_id": "a-ridge-puffer-vest-black-m", "color": "black", "size": "M", "image_id": "img-a-ridge-puffer-vest-black"},
+        {"variant_id": "a-ridge-puffer-vest-black-l", "color": "black", "size": "L", "image_id": "img-a-ridge-puffer-vest-black"},
+        {"variant_id": "a-ridge-puffer-vest-olive-m", "color": "olive", "size": "M", "image_id": "img-a-ridge-puffer-vest-olive"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-trail-fleece-vest",
+      "name": "Trail Fleece Vest",
+      "description": "Fleece vest for layering under a shell.",
+      "category": "vests",
+      "tags": ["vest", "fleece", "layering", "collar"],
+      "price_minor": 5900,
+      "image_ids": ["img-a-trail-fleece-vest-gray", "img-a-trail-fleece-vest-navy"],
+      "variants": [
+        {"variant_id": "a-trail-fleece-vest-gray-m", "color": "gray", "size": "M", "image_id": "img-a-trail-fleece-vest-gray"},
+        {"variant_id": "a-trail-fleece-vest-navy-m", "color": "navy", "size": "M", "image_id": "img-a-trail-fleece-vest-navy"},
+        {"variant_id": "a-trail-fleece-vest-navy-l", "color": "navy", "size": "L", "image_id": "img-a-trail-fleece-vest-navy"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-rain-bucket-hat",
+      "name": "Rain Bucket Hat",
+      "description": "Waterproof bucket hat with a wide brim.",
+      "category": "hats",
+      "tags": ["hat", "rain", "waterproof", "brim"],
+      "price_minor": 3400,
+      "image_ids": ["img-a-rain-bucket-hat-navy", "img-a-rain-bucket-hat-yellow"],
+      "variants": [
+        {"variant_id": "a-rain-bucket-hat-navy-m", "color": "navy", "size": "M", "image_id": "img-a-rain-bucket-hat-navy"},
+        {"variant_id": "a-rain-bucket-hat-navy-l", "color": "navy", "size": "L", "image_id": "img-a-rain-bucket-hat-navy"},
+        {"variant_id": "a-rain-bucket-hat-yellow-m", "color": "yellow", "size": "M", "image_id": "img-a-rain-bucket-hat-yellow"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-merino-beanie",
+      "name": "Merino Beanie",
+      "description": "Warm merino wool beanie with a folded cuff and a small pom.",
+      "category": "hats",
+      "tags": ["hat", "warm", "knit", "merino", "winter", "beanie"],
+      "price_minor": 2900,
+      "image_ids": ["img-a-merino-beanie-red", "img-a-merino-beanie-gray", "img-a-merino-beanie-black"],
+      "variants": [
+        {"variant_id": "a-merino-beanie-red-os", "color": "red", "size": "OS", "image_id": "img-a-merino-beanie-red"},
+        {"variant_id": "a-merino-beanie-gray-os", "color": "gray", "size": "OS", "image_id": "img-a-merino-beanie-gray"},
+        {"variant_id": "a-merino-beanie-black-os", "color": "black", "size": "OS", "image_id": "img-a-merino-beanie-black"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-trail-sun-cap",
+      "name": "Trail Sun Cap",
+      "description": "Lightweight cap with a visor and a vented crown.",
+      "category": "hats",
+      "tags": ["hat", "sun", "lightweight", "visor", "breathable", "hiking"],
+      "price_minor": 3200,
+      "image_ids": ["img-a-trail-sun-cap-tan", "img-a-trail-sun-cap-white"],
+      "variants": [
+        {"variant_id": "a-trail-sun-cap-tan-os", "color": "tan", "size": "OS", "image_id": "img-a-trail-sun-cap-tan"},
+        {"variant_id": "a-trail-sun-cap-white-os", "color": "white", "size": "OS", "image_id": "img-a-trail-sun-cap-white"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-stormproof-gloves",
+      "name": "Stormproof Gloves",
+      "description": "Waterproof insulated gloves for cold rain.",
+      "category": "gloves",
+      "tags": ["gloves", "rain", "waterproof", "warm", "insulated"],
+      "price_minor": 4900,
+      "image_ids": ["img-a-stormproof-gloves-black"],
+      "variants": [
+        {"variant_id": "a-stormproof-gloves-black-s", "color": "black", "size": "S", "image_id": "img-a-stormproof-gloves-black"},
+        {"variant_id": "a-stormproof-gloves-black-m", "color": "black", "size": "M", "image_id": "img-a-stormproof-gloves-black"},
+        {"variant_id": "a-stormproof-gloves-black-l", "color": "black", "size": "L", "image_id": "img-a-stormproof-gloves-black"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-touchscreen-liners",
+      "name": "Touchscreen Liner Gloves",
+      "description": "Thin liner gloves that work with phone screens.",
+      "category": "gloves",
+      "tags": ["gloves", "lightweight", "touchscreen", "liner", "layering"],
+      "price_minor": 2900,
+      "image_ids": ["img-a-touchscreen-liners-gray", "img-a-touchscreen-liners-black"],
+      "variants": [
+        {"variant_id": "a-touchscreen-liners-gray-s", "color": "gray", "size": "S", "image_id": "img-a-touchscreen-liners-gray"},
+        {"variant_id": "a-touchscreen-liners-gray-m", "color": "gray", "size": "M", "image_id": "img-a-touchscreen-liners-gray"},
+        {"variant_id": "a-touchscreen-liners-black-m", "color": "black", "size": "M", "image_id": "img-a-touchscreen-liners-black"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-a",
+      "product_id": "a-expedition-mitts",
+      "name": "Expedition Mitts",
+      "description": "Down-filled mittens for very cold days.",
+      "category": "gloves",
+      "tags": ["gloves", "mitten", "warm", "insulated", "down", "winter"],
+      "price_minor": 6900,
+      "image_ids": ["img-a-expedition-mitts-red", "img-a-expedition-mitts-black"],
+      "variants": [
+        {"variant_id": "a-expedition-mitts-red-m", "color": "red", "size": "M", "image_id": "img-a-expedition-mitts-red"},
+        {"variant_id": "a-expedition-mitts-red-l", "color": "red", "size": "L", "image_id": "img-a-expedition-mitts-red"},
+        {"variant_id": "a-expedition-mitts-black-l", "color": "black", "size": "L", "image_id": "img-a-expedition-mitts-black"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-b",
+      "product_id": "jacket-b",
+      "name": "Harbor Deck Jacket",
+      "description": "Water-resistant deck jacket with a corduroy collar. No hood.",
+      "category": "jackets",
+      "tags": ["wind", "water-resistant", "collar", "deck", "sailing"],
+      "price_minor": 11900,
+      "image_ids": ["img-jacket-b-navy", "img-jacket-b-red"],
+      "variants": [
+        {"variant_id": "jacket-b-navy-m", "color": "navy", "size": "M", "image_id": "img-jacket-b-navy"},
+        {"variant_id": "jacket-b-navy-l", "color": "navy", "size": "L", "image_id": "img-jacket-b-navy"},
+        {"variant_id": "jacket-b-red-m", "color": "red", "size": "M", "image_id": "img-jacket-b-red"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-b",
+      "product_id": "b-squall-rain-shell",
+      "name": "Squall Rain Shell",
+      "description": "Waterproof sailing rain jacket with a high collar and a hood.",
+      "category": "rain-shells",
+      "tags": ["rain", "jacket", "waterproof", "hooded", "sailing"],
+      "price_minor": 13900,
+      "image_ids": ["img-b-squall-rain-shell-yellow", "img-b-squall-rain-shell-red"],
+      "variants": [
+        {"variant_id": "b-squall-rain-shell-yellow-m", "color": "yellow", "size": "M", "image_id": "img-b-squall-rain-shell-yellow"},
+        {"variant_id": "b-squall-rain-shell-yellow-l", "color": "yellow", "size": "L", "image_id": "img-b-squall-rain-shell-yellow"},
+        {"variant_id": "b-squall-rain-shell-red-m", "color": "red", "size": "M", "image_id": "img-b-squall-rain-shell-red"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-b",
+      "product_id": "b-dockside-fleece",
+      "name": "Dockside Fleece",
+      "description": "Quarter-zip fleece pullover with a collar and a front pocket.",
+      "category": "fleeces",
+      "tags": ["fleece", "warm", "pullover", "sailing", "collar"],
+      "price_minor": 7400,
+      "image_ids": ["img-b-dockside-fleece-navy", "img-b-dockside-fleece-gray"],
+      "variants": [
+        {"variant_id": "b-dockside-fleece-navy-m", "color": "navy", "size": "M", "image_id": "img-b-dockside-fleece-navy"},
+        {"variant_id": "b-dockside-fleece-gray-m", "color": "gray", "size": "M", "image_id": "img-b-dockside-fleece-gray"},
+        {"variant_id": "b-dockside-fleece-gray-l", "color": "gray", "size": "L", "image_id": "img-b-dockside-fleece-gray"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-b",
+      "product_id": "b-mooring-vest",
+      "name": "Mooring Vest",
+      "description": "Insulated vest with deep hand pockets. No sleeves.",
+      "category": "vests",
+      "tags": ["vest", "warm", "insulated", "puffer", "collar"],
+      "price_minor": 8400,
+      "image_ids": ["img-b-mooring-vest-navy", "img-b-mooring-vest-orange"],
+      "variants": [
+        {"variant_id": "b-mooring-vest-navy-m", "color": "navy", "size": "M", "image_id": "img-b-mooring-vest-navy"},
+        {"variant_id": "b-mooring-vest-orange-m", "color": "orange", "size": "M", "image_id": "img-b-mooring-vest-orange"},
+        {"variant_id": "b-mooring-vest-orange-l", "color": "orange", "size": "L", "image_id": "img-b-mooring-vest-orange"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-b",
+      "product_id": "b-harbor-watch-cap",
+      "name": "Harbor Watch Cap",
+      "description": "Ribbed knit watch cap.",
+      "category": "hats",
+      "tags": ["hat", "warm", "knit", "beanie"],
+      "price_minor": 3100,
+      "image_ids": ["img-b-harbor-watch-cap-navy", "img-b-harbor-watch-cap-red", "img-b-harbor-watch-cap-gray"],
+      "variants": [
+        {"variant_id": "b-harbor-watch-cap-navy-os", "color": "navy", "size": "OS", "image_id": "img-b-harbor-watch-cap-navy"},
+        {"variant_id": "b-harbor-watch-cap-red-os", "color": "red", "size": "OS", "image_id": "img-b-harbor-watch-cap-red"},
+        {"variant_id": "b-harbor-watch-cap-gray-os", "color": "gray", "size": "OS", "image_id": "img-b-harbor-watch-cap-gray"}
+      ]
+    },
+    {
+      "tenant_id": "retailer-b",
+      "product_id": "b-sailing-gloves",
+      "name": "Sailing Gloves",
+      "description": "Grippy synthetic leather sailing gloves with open fingertips.",
+      "category": "gloves",
+      "tags": ["gloves", "sailing", "grip", "lightweight"],
+      "price_minor": 3900,
+      "image_ids": ["img-b-sailing-gloves-black"],
+      "variants": [
+        {"variant_id": "b-sailing-gloves-black-s", "color": "black", "size": "S", "image_id": "img-b-sailing-gloves-black"},
+        {"variant_id": "b-sailing-gloves-black-m", "color": "black", "size": "M", "image_id": "img-b-sailing-gloves-black"},
+        {"variant_id": "b-sailing-gloves-black-l", "color": "black", "size": "L", "image_id": "img-b-sailing-gloves-black"}
+      ]
+    }
+  ],
+  "inventory": [
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "jacket-a", "variant_id": "jacket-a-navy-m", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "jacket-a", "variant_id": "jacket-a-navy-m", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "jacket-a", "variant_id": "jacket-a-navy-l", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "jacket-a", "variant_id": "jacket-a-navy-l", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "jacket-a", "variant_id": "jacket-a-black-m", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "jacket-a", "variant_id": "jacket-a-black-m", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-trailhead-softshell", "variant_id": "a-trailhead-softshell-olive-m", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-trailhead-softshell", "variant_id": "a-trailhead-softshell-olive-m", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-trailhead-softshell", "variant_id": "a-trailhead-softshell-olive-l", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-trailhead-softshell", "variant_id": "a-trailhead-softshell-olive-l", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-trailhead-softshell", "variant_id": "a-trailhead-softshell-gray-m", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-trailhead-softshell", "variant_id": "a-trailhead-softshell-gray-m", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-summit-down-jacket", "variant_id": "a-summit-down-jacket-black-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-summit-down-jacket", "variant_id": "a-summit-down-jacket-black-m", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-summit-down-jacket", "variant_id": "a-summit-down-jacket-black-l", "quantity": 6, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-summit-down-jacket", "variant_id": "a-summit-down-jacket-black-l", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-summit-down-jacket", "variant_id": "a-summit-down-jacket-red-s", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-summit-down-jacket", "variant_id": "a-summit-down-jacket-red-s", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-summit-down-jacket", "variant_id": "a-summit-down-jacket-red-m", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-summit-down-jacket", "variant_id": "a-summit-down-jacket-red-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-city-commuter-jacket", "variant_id": "a-city-commuter-jacket-charcoal-s", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-city-commuter-jacket", "variant_id": "a-city-commuter-jacket-charcoal-s", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-city-commuter-jacket", "variant_id": "a-city-commuter-jacket-charcoal-m", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-city-commuter-jacket", "variant_id": "a-city-commuter-jacket-charcoal-m", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-city-commuter-jacket", "variant_id": "a-city-commuter-jacket-navy-m", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-city-commuter-jacket", "variant_id": "a-city-commuter-jacket-navy-m", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-downpour-packable", "variant_id": "a-downpour-packable-yellow-s", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-downpour-packable", "variant_id": "a-downpour-packable-yellow-s", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-downpour-packable", "variant_id": "a-downpour-packable-yellow-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-downpour-packable", "variant_id": "a-downpour-packable-yellow-m", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-downpour-packable", "variant_id": "a-downpour-packable-navy-m", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-downpour-packable", "variant_id": "a-downpour-packable-navy-m", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-downpour-packable", "variant_id": "a-downpour-packable-navy-l", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-downpour-packable", "variant_id": "a-downpour-packable-navy-l", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-stormline-pro-shell", "variant_id": "a-stormline-pro-shell-red-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-stormline-pro-shell", "variant_id": "a-stormline-pro-shell-red-m", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-stormline-pro-shell", "variant_id": "a-stormline-pro-shell-red-l", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-stormline-pro-shell", "variant_id": "a-stormline-pro-shell-red-l", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-stormline-pro-shell", "variant_id": "a-stormline-pro-shell-black-l", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-stormline-pro-shell", "variant_id": "a-stormline-pro-shell-black-l", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-drizzle-anorak", "variant_id": "a-drizzle-anorak-green-m", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-drizzle-anorak", "variant_id": "a-drizzle-anorak-green-m", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-drizzle-anorak", "variant_id": "a-drizzle-anorak-green-l", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-drizzle-anorak", "variant_id": "a-drizzle-anorak-green-l", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-drizzle-anorak", "variant_id": "a-drizzle-anorak-navy-m", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-drizzle-anorak", "variant_id": "a-drizzle-anorak-navy-m", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-basecamp-fleece", "variant_id": "a-basecamp-fleece-gray-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-basecamp-fleece", "variant_id": "a-basecamp-fleece-gray-m", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-basecamp-fleece", "variant_id": "a-basecamp-fleece-gray-l", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-basecamp-fleece", "variant_id": "a-basecamp-fleece-gray-l", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-basecamp-fleece", "variant_id": "a-basecamp-fleece-navy-m", "quantity": 6, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-basecamp-fleece", "variant_id": "a-basecamp-fleece-navy-m", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-sherpa-pullover", "variant_id": "a-sherpa-pullover-cream-s", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-sherpa-pullover", "variant_id": "a-sherpa-pullover-cream-s", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-sherpa-pullover", "variant_id": "a-sherpa-pullover-cream-m", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-sherpa-pullover", "variant_id": "a-sherpa-pullover-cream-m", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-sherpa-pullover", "variant_id": "a-sherpa-pullover-brown-m", "quantity": 6, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-sherpa-pullover", "variant_id": "a-sherpa-pullover-brown-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-grid-fleece-hoodie", "variant_id": "a-grid-fleece-hoodie-blue-m", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-grid-fleece-hoodie", "variant_id": "a-grid-fleece-hoodie-blue-m", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-grid-fleece-hoodie", "variant_id": "a-grid-fleece-hoodie-blue-l", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-grid-fleece-hoodie", "variant_id": "a-grid-fleece-hoodie-blue-l", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-grid-fleece-hoodie", "variant_id": "a-grid-fleece-hoodie-black-m", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-grid-fleece-hoodie", "variant_id": "a-grid-fleece-hoodie-black-m", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-ridge-puffer-vest", "variant_id": "a-ridge-puffer-vest-black-m", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-ridge-puffer-vest", "variant_id": "a-ridge-puffer-vest-black-m", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-ridge-puffer-vest", "variant_id": "a-ridge-puffer-vest-black-l", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-ridge-puffer-vest", "variant_id": "a-ridge-puffer-vest-black-l", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-ridge-puffer-vest", "variant_id": "a-ridge-puffer-vest-olive-m", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-ridge-puffer-vest", "variant_id": "a-ridge-puffer-vest-olive-m", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-trail-fleece-vest", "variant_id": "a-trail-fleece-vest-gray-m", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-trail-fleece-vest", "variant_id": "a-trail-fleece-vest-gray-m", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-trail-fleece-vest", "variant_id": "a-trail-fleece-vest-navy-m", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-trail-fleece-vest", "variant_id": "a-trail-fleece-vest-navy-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-trail-fleece-vest", "variant_id": "a-trail-fleece-vest-navy-l", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-trail-fleece-vest", "variant_id": "a-trail-fleece-vest-navy-l", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-rain-bucket-hat", "variant_id": "a-rain-bucket-hat-navy-m", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-rain-bucket-hat", "variant_id": "a-rain-bucket-hat-navy-m", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-rain-bucket-hat", "variant_id": "a-rain-bucket-hat-navy-l", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-rain-bucket-hat", "variant_id": "a-rain-bucket-hat-navy-l", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-rain-bucket-hat", "variant_id": "a-rain-bucket-hat-yellow-m", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-rain-bucket-hat", "variant_id": "a-rain-bucket-hat-yellow-m", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-merino-beanie", "variant_id": "a-merino-beanie-red-os", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-merino-beanie", "variant_id": "a-merino-beanie-red-os", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-merino-beanie", "variant_id": "a-merino-beanie-gray-os", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-merino-beanie", "variant_id": "a-merino-beanie-gray-os", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-merino-beanie", "variant_id": "a-merino-beanie-black-os", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-merino-beanie", "variant_id": "a-merino-beanie-black-os", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-trail-sun-cap", "variant_id": "a-trail-sun-cap-tan-os", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-trail-sun-cap", "variant_id": "a-trail-sun-cap-tan-os", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-trail-sun-cap", "variant_id": "a-trail-sun-cap-white-os", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-trail-sun-cap", "variant_id": "a-trail-sun-cap-white-os", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-stormproof-gloves", "variant_id": "a-stormproof-gloves-black-s", "quantity": 6, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-stormproof-gloves", "variant_id": "a-stormproof-gloves-black-s", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-stormproof-gloves", "variant_id": "a-stormproof-gloves-black-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-stormproof-gloves", "variant_id": "a-stormproof-gloves-black-m", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-stormproof-gloves", "variant_id": "a-stormproof-gloves-black-l", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-stormproof-gloves", "variant_id": "a-stormproof-gloves-black-l", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-touchscreen-liners", "variant_id": "a-touchscreen-liners-gray-s", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-touchscreen-liners", "variant_id": "a-touchscreen-liners-gray-s", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-touchscreen-liners", "variant_id": "a-touchscreen-liners-gray-m", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-touchscreen-liners", "variant_id": "a-touchscreen-liners-gray-m", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-touchscreen-liners", "variant_id": "a-touchscreen-liners-black-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-touchscreen-liners", "variant_id": "a-touchscreen-liners-black-m", "quantity": 6, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-expedition-mitts", "variant_id": "a-expedition-mitts-red-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-expedition-mitts", "variant_id": "a-expedition-mitts-red-m", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-expedition-mitts", "variant_id": "a-expedition-mitts-red-l", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-expedition-mitts", "variant_id": "a-expedition-mitts-red-l", "quantity": 6, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a", "product_id": "a-expedition-mitts", "variant_id": "a-expedition-mitts-black-l", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-a", "store_id": "store-a-riverside", "product_id": "a-expedition-mitts", "variant_id": "a-expedition-mitts-black-l", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "jacket-b", "variant_id": "jacket-b-navy-m", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "jacket-b", "variant_id": "jacket-b-navy-m", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "jacket-b", "variant_id": "jacket-b-navy-l", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "jacket-b", "variant_id": "jacket-b-navy-l", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "jacket-b", "variant_id": "jacket-b-red-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "jacket-b", "variant_id": "jacket-b-red-m", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-squall-rain-shell", "variant_id": "b-squall-rain-shell-yellow-m", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-squall-rain-shell", "variant_id": "b-squall-rain-shell-yellow-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-squall-rain-shell", "variant_id": "b-squall-rain-shell-yellow-l", "quantity": 6, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-squall-rain-shell", "variant_id": "b-squall-rain-shell-yellow-l", "quantity": 6, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-squall-rain-shell", "variant_id": "b-squall-rain-shell-red-m", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-squall-rain-shell", "variant_id": "b-squall-rain-shell-red-m", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-dockside-fleece", "variant_id": "b-dockside-fleece-navy-m", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-dockside-fleece", "variant_id": "b-dockside-fleece-navy-m", "quantity": 0, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-dockside-fleece", "variant_id": "b-dockside-fleece-gray-m", "quantity": 6, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-dockside-fleece", "variant_id": "b-dockside-fleece-gray-m", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-dockside-fleece", "variant_id": "b-dockside-fleece-gray-l", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-dockside-fleece", "variant_id": "b-dockside-fleece-gray-l", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-mooring-vest", "variant_id": "b-mooring-vest-navy-m", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-mooring-vest", "variant_id": "b-mooring-vest-navy-m", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-mooring-vest", "variant_id": "b-mooring-vest-orange-m", "quantity": 7, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-mooring-vest", "variant_id": "b-mooring-vest-orange-m", "quantity": 4, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-mooring-vest", "variant_id": "b-mooring-vest-orange-l", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-mooring-vest", "variant_id": "b-mooring-vest-orange-l", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-harbor-watch-cap", "variant_id": "b-harbor-watch-cap-navy-os", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-harbor-watch-cap", "variant_id": "b-harbor-watch-cap-navy-os", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-harbor-watch-cap", "variant_id": "b-harbor-watch-cap-red-os", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-harbor-watch-cap", "variant_id": "b-harbor-watch-cap-red-os", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-harbor-watch-cap", "variant_id": "b-harbor-watch-cap-gray-os", "quantity": 6, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-harbor-watch-cap", "variant_id": "b-harbor-watch-cap-gray-os", "quantity": 5, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-sailing-gloves", "variant_id": "b-sailing-gloves-black-s", "quantity": 9, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-sailing-gloves", "variant_id": "b-sailing-gloves-black-s", "quantity": 1, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-sailing-gloves", "variant_id": "b-sailing-gloves-black-m", "quantity": 3, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-sailing-gloves", "variant_id": "b-sailing-gloves-black-m", "quantity": 2, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b", "product_id": "b-sailing-gloves", "variant_id": "b-sailing-gloves-black-l", "quantity": 8, "provenance": "synthetic"},
+    {"tenant_id": "retailer-b", "store_id": "store-b-market", "product_id": "b-sailing-gloves", "variant_id": "b-sailing-gloves-black-l", "quantity": 8, "provenance": "synthetic"}
+  ],
+  "assets": "assets.json"
+}

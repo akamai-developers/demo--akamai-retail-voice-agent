@@ -1,0 +1,70 @@
+{
+  "provenance": "synthetic mock inputs; no GPU capture",
+  "capability_profile": "retail-voice-v1",
+  "allowed": {
+    "sku": "jacket-a",
+    "store_id": "store-a"
+  },
+  "denied": {
+    "sku": "jacket-b",
+    "store_id": "store-b"
+  },
+  "conversation": {
+    "provenance": "synthetic mock conversation; expected values come from the packaged catalog and the scripted mock backend, not a GPU capture",
+    "tenant": "retailer-a",
+    "messages": [
+      {
+        "text": "I need a lightweight jacket for rainy weather under 150 dollars",
+        "expect": {
+          "tools": [
+            "search_products"
+          ],
+          "product_ids": [
+            "a-drizzle-anorak",
+            "a-downpour-packable",
+            "jacket-a"
+          ],
+          "display_revision": 1
+        }
+      },
+      {
+        "text": "Does the second one come in navy?",
+        "expect": {
+          "tools": [
+            "get_product_details"
+          ],
+          "selected_product_id": "a-downpour-packable",
+          "display_revision": 1,
+          "selected_variant_id": null
+        }
+      },
+      {
+        "text": "Is medium available here?",
+        "expect": {
+          "tools": [
+            "get_product_details",
+            "check_availability"
+          ],
+          "stock": {
+            "variant_id": "a-downpour-packable-navy-m",
+            "store_id": "store-a",
+            "quantity": 4,
+            "product_id": "a-downpour-packable"
+          },
+          "answer": "Fixture answer: Downpour Packable Shell in navy M: 4 in stock at Northline Downtown.",
+          "selected_variant_id": "a-downpour-packable-navy-m"
+        }
+      },
+      {
+        "text": "What's the date today?",
+        "expect": {
+          "tools": [],
+          "selected_product_id": "a-downpour-packable",
+          "selected_variant_id": "a-downpour-packable-navy-m",
+          "stock_checks": [],
+          "display_revision": 1
+        }
+      }
+    ]
+  }
+}

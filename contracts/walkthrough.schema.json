@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Recorded walkthrough manifest",
+  "description": "walkthrough.json in WALKTHROUGH_DIR, next to walkthrough.mp4 and walkthrough.vtt. The gateway checks it at startup with the same rules in walkthrough.py and serves the three files under /app/walkthrough/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["build", "recorded", "captions", "chapters"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "build": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._+-]{4,64}$",
+      "description": "The commit or version the footage was recorded from. The tab shows it next to the player."
+    },
+    "recorded": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "The recording date. The tab shows it next to the player."
+    },
+    "title": {"type": "string", "maxLength": 120},
+    "duration_seconds": {"type": "number", "minimum": 0},
+    "captions": {"const": "walkthrough.vtt"},
+    "chapters": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "description": "In order; each start is later than the one before.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["start", "title"],
+        "properties": {
+          "start": {"type": "number", "minimum": 0, "description": "Seconds from the start of the video."},
+          "title": {"type": "string", "minLength": 1, "maxLength": 120}
+        }
+      }
+    }
+  }
+}

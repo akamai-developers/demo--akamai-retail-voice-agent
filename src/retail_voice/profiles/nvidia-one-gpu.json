@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "profile_id": "retail-nvidia-one-gpu-v1",
+  "hardware_validated": false,
+  "models": {
+    "asr": {
+      "id": "nvidia/nemotron-speech-streaming-en-0.6b",
+      "revision": "ebe59e5a817142986528bbbee5dba8db7b38ed50",
+      "file": "nemotron-speech-streaming-en-0.6b.nemo"
+    },
+    "tts": {
+      "id": "nvidia/magpie_tts_multilingual_357m",
+      "revision": "446bff55e1fe3d3aa29c771574e7d2b0fa322990",
+      "file": "magpie_tts_multilingual_357m.nemo"
+    },
+    "codec": {
+      "id": "nvidia/nemo-nano-codec-22khz-1.89kbps-21.5fps",
+      "revision": "fc00890b604aa2de298d2641ffc6c5f6caf8c4d7",
+      "file": "nemo-nano-codec-22khz-1.89kbps-21.5fps.nemo"
+    },
+    "vlm": {
+      "id": "nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-FP8",
+      "revision": "0acd4b1c237eab45d3977b1b46631919e9a75774"
+    }
+  },
+  "runtime": {
+    "pipecat": "1.15.0",
+    "nemo_commit": "218d0b443441b7d8aa1c832f47df310f186cf0a4",
+    "vllm_image": "vllm/vllm-openai@sha256:51fdfe717fa0505c177dddc46bd38c22fc1f2156ba14d1b1cd63f78eaa60fd32",
+    "vllm_tag": "v0.20.0-cu129",
+    "caddy_image": "library/caddy@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d",
+    "torch": "2.8.0",
+    "torchaudio": "2.8.0",
+    "cuda_wheels": "cu128"
+  }
+}

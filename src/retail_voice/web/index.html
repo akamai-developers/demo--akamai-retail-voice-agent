@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Retail voice assistant | Akamai Cloud</title>
+  <link rel="stylesheet" href="/app/app.css">
+  <link rel="stylesheet" href="/app/architecture-flow.css">
+  <script type="module" src="/app/app.js"></script>
+</head>
+<body>
+  <header>
+    <img class="logo" src="/app/brand/akamai-logo.svg" alt="Akamai">
+    <span class="wordmark">CLOUD / DEVELOPER DEMO</span>
+    <span id="retailer-name" class="retailer" hidden></span>
+    <span id="site-label" class="site-label" hidden></span>
+    <span id="mode-badge" class="badge">CONNECTING</span>
+    <button id="how-toggle" class="ghost" aria-pressed="false" aria-controls="how" hidden>How it works</button>
+    <button id="sign-out" class="ghost" hidden>Sign out</button>
+  </header>
+  <main>
+    <p id="mode-notice" class="notice">Loading the gateway mode.</p>
+
+    <section id="signin" class="panel signin" aria-labelledby="signin-heading">
+      <p class="eyebrow">RETAIL VOICE ASSISTANT</p>
+      <h1 id="signin-heading">Open a storefront</h1>
+      <p class="lead">One key opens one store. Its products, images and stock stay inside it.</p>
+      <form id="signin-form" class="signin-form">
+        <label class="field">Retailer key<input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste a retailer key"></label>
+        <button id="signin-button" class="accent" type="submit" disabled>Open storefront</button>
+      </form>
+      <p id="signin-status" class="status-text" role="status" aria-live="polite"></p>
+    </section>
+
+    <div id="store" class="store" hidden>
+      <div class="left">
+        <section class="panel conversation" aria-labelledby="invite">
+          <p id="store-line" class="eyebrow"></p>
+          <h1 id="invite" class="invite">Tell me what you're looking for.</h1>
+          <div class="talk-row">
+            <button id="talk" class="accent talk" aria-describedby="state-line">Start conversation</button>
+            <div class="talk-status">
+              <p id="state-line" class="state-line" role="status" aria-live="polite">Ready. Talk or type.</p>
+              <div id="mic-level" class="mic-level" role="meter" aria-label="Microphone level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><span id="mic-level-fill" class="fill"></span></div>
+            </div>
+          </div>
+          <div class="voice-controls">
+            <button id="mute-mic" aria-pressed="false" disabled>Mute microphone</button>
+            <button id="end" disabled>End conversation</button>
+          </div>
+          <form id="text-form" class="composer">
+            <label class="sr-only" for="text">Type a message</label>
+            <input id="text" maxlength="2000" autocomplete="off" placeholder="Or type: a warm hat under $40">
+            <button id="send" type="submit">Send</button>
+          </form>
+          <div class="reply-controls">
+            <button id="play" hidden>Play reply</button>
+            <button id="stop-audio" disabled>Stop playback</button>
+            <button id="mute" aria-pressed="false">Mute replies</button>
+            <button id="retry" hidden>Retry the same message</button>
+            <span id="audio-kind" class="hint"></span>
+            <audio id="audio" preload="auto"></audio>
+          </div>
+          <ol id="transcript" class="transcript" aria-label="Conversation"></ol>
+          <p id="turns-left" class="hint"></p>
+        </section>
+
+      </div>
+
+      <div class="right">
+        <section class="panel products" aria-labelledby="products-heading">
+          <div class="panel-head">
+            <h2 id="products-heading">Products</h2>
+            <span id="products-label" class="small-badge">STOREFRONT</span>
+            <button id="browse-all" class="ghost small" hidden>Show all products</button>
+          </div>
+          <p id="products-note" class="hint"></p>
+          <section id="tryon" class="tryon" aria-labelledby="tryon-heading" hidden>
+            <div class="panel-head"><h3 id="tryon-heading">See it on me</h3><button id="tryon-close" class="ghost small">Close preview</button></div>
+            <p id="tryon-label" class="eyebrow"></p>
+            <div id="tryon-photo" class="tryon-photo"></div>
+            <p id="tryon-note" class="hint"></p>
+          </section>
+          <section id="cart" class="cart" aria-labelledby="cart-heading" hidden>
+            <div class="panel-head"><h3 id="cart-heading">Cart</h3><span id="cart-count" class="small-badge"></span></div>
+            <ul id="cart-items" class="cart-items"></ul>
+            <p id="cart-total" class="cart-total"></p>
+          </section>
+          <p id="stock-line" class="stock-line" hidden></p>
+          <section id="focus" class="focus" aria-labelledby="focus-name" hidden>
+            <div id="focus-photo" class="focus-photo"></div>
+            <div class="focus-info">
+              <p id="focus-label" class="eyebrow"></p>
+              <h3 id="focus-name" class="focus-name" tabindex="-1"></h3>
+              <button id="tryon-button" class="ghost" hidden>See it on me</button>
+              <p id="focus-price" class="focus-price"></p>
+              <p id="focus-description" class="focus-description"></p>
+              <dl class="focus-facts">
+                <dt>Colors</dt><dd id="focus-colors"></dd>
+                <dt>Sizes</dt><dd id="focus-sizes"></dd>
+              </dl>
+              <ul id="focus-tags" class="focus-tags" aria-label="Tags"></ul>
+              <button id="focus-back" class="ghost">Back to results</button>
+            </div>
+          </section>
+          <ul id="cards" class="cards" aria-label="Product cards"></ul>
+        </section>
+      </div>
+
+      <details id="diagnostics" class="panel diagnostics">
+        <summary>Developer diagnostics</summary>
+        <p class="hint">The older single-turn route. It uses the same session and checks one fixed product at one store.</p>
+        <div class="field-row">
+          <label class="field">Product SKU<input id="sku" value="jacket-a" maxlength="80"></label>
+          <label class="field">Store<input id="store-id" value="store-a" maxlength="80"></label>
+        </div>
+        <div class="actions">
+          <button id="fixture" hidden>Run mock fixture</button>
+        </div>
+        <label class="field">Audio, mono 16 kHz PCM16 WAV, up to 20 s<input id="audio-file" type="file" accept="audio/wav,.wav"></label>
+        <label class="field">Photo, PNG or JPEG, up to 2 MB<input id="image-file" type="file" accept="image/png,image/jpeg"></label>
+        <button id="upload">Submit WAV and photo</button>
+        <p id="diag-status" class="status-text" role="status"></p>
+        <p class="hint">The redacted events of the latest turn, this one included, are under How it works, Raw redacted trace.</p>
+      </details>
+    </div>
+
+    <section id="how" class="panel how" aria-labelledby="how-heading" hidden>
+      <div class="panel-head">
+        <h1 id="how-heading" tabindex="-1">How it works</h1>
+        <span class="small-badge">AKAMAI CLOUD · NETWORK TO INFERENCE</span>
+        <button id="stage-toggle" class="ghost" aria-pressed="false">Presentation view</button>
+      </div>
+      <p class="hint">Explore the architecture or inspect the latest turn. Your microphone pauses here.</p>
+      <div class="how-tabs" role="tablist" aria-label="How it works views">
+        <button id="how-tab-arch" class="tab" type="button" role="tab" aria-selected="true" aria-controls="how-panel-arch" tabindex="0">Architecture</button>
+        <button id="how-tab-live" class="tab" type="button" role="tab" aria-selected="false" aria-controls="how-panel-live" tabindex="-1">Live turn</button>
+        <button id="how-tab-video" class="tab" type="button" role="tab" aria-selected="false" aria-controls="how-panel-video" tabindex="-1">Video walkthrough</button>
+      </div>
+
+      <div id="how-panel-arch" class="how-panel" role="tabpanel" aria-labelledby="how-tab-arch">
+        <section id="request-stage" class="architecture-stage" aria-label="Illustrative architecture flow" tabindex="-1">
+          <div class="architecture-canvas"><svg id="platform-diagram" xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-labelledby="platform-title platform-description">
+<title id="platform-title">Retail voice architecture: session placement and workload flow to a selected GPU site</title>
+<desc id="platform-description">The shopper uses a store network. Dashed session-setup connections reach Akamai entry, Functions and a site selector, which checks other candidate sites and reserves a selected site. Solid workload connections go directly from the browser through Cloud Firewall and HTTPS ingress to a Linode gateway. The gateway uses CPU tools and private speech, reasoning, speech-synthesis and image services on a GPU. Replies return to the shopper. BlueField, Guardicore, multiple-site placement and separate infrastructure tenant lanes are proposed.</desc>
+<defs>
+<marker id="platform-traffic" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#0a6cad"/></marker>
+<marker id="platform-control" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#5b6b80"/></marker>
+<symbol id="platform-phone" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="3" width="25" height="42" rx="5"/><path d="M20 9h9M22 38h5M5 19v10M1 22v4"/></g></symbol>
+<symbol id="platform-wifi" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12c11-11 27-11 38 0M12 19c7-7 17-7 24 0M19 26c3-3 7-3 10 0"/><rect x="8" y="34" width="32" height="10" rx="3"/><path d="M14 39h1m6 0h1m6 0h6"/></g></symbol>
+<symbol id="platform-globe" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="24" cy="24" r="19"/><ellipse cx="24" cy="24" rx="8" ry="19"/><path d="M5 24h38M10 12h28M10 36h28"/></g></symbol>
+<symbol id="platform-function" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="42" height="42" rx="6"/><path d="m17 15-8 9 8 9m14-18 8 9-8 9m-5-20-4 22"/></g></symbol>
+<symbol id="platform-selector" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="18" width="12" height="12" rx="2"/><path d="M15 24h12M27 8v32m0-32h7m-7 16h7m-7 16h7"/><rect x="34" y="3" width="11" height="10" rx="2"/><rect x="34" y="19" width="11" height="10" rx="2"/><rect x="34" y="35" width="11" height="10" rx="2"/></g></symbol>
+<symbol id="platform-shield" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 3 42 10v13c0 10-10 18-18 22C16 41 6 33 6 23V10Z"/><path d="m15 24 7 7 12-14"/></g></symbol>
+<symbol id="platform-lock" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="8" y="21" width="32" height="23" rx="4"/><path d="M15 21v-9a9 9 0 0 1 18 0v9M24 29v7"/></g></symbol>
+<symbol id="platform-gpu" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="10" y="10" width="28" height="28" rx="4"/><rect x="18" y="18" width="12" height="12" rx="2"/><path d="M17 3v7m14-7v7M17 38v7m14-7v7M3 17h7m-7 14h7m28-14h7m-7 14h7"/></g></symbol>
+</defs>
+<rect x="0" y="0" width="1920" height="1080" rx="0" fill="#ffffff" stroke="#ffffff" stroke-width="1.5"/>
+<image href="/app/brand/akamai-logo.svg" x="56" y="32" width="132" height="57"/>
+<text x="224" y="74" font-size="36" fill="#002f6c" font-weight="600" text-anchor="start"><tspan x="224" dy="0">Retail voice: network to inference</tspan></text>
+<text x="1850" y="69" font-size="17" fill="#5b6b80" font-weight="500" text-anchor="end"><tspan x="1850" dy="0">TARGET ARCHITECTURE</tspan></text>
+<path d="M56 112H1860" stroke="#b7c5d8" stroke-width="1"/>
+<rect x="470" y="155" width="1390" height="810" rx="8" fill="#f5f7fa" stroke="#b7c5d8" stroke-width="2"/>
+<text x="492" y="192" font-size="26" fill="#002f6c" font-weight="600" text-anchor="start"><tspan x="492" dy="0">Akamai Cloud</tspan></text>
+<rect x="40" y="545" width="380" height="270" rx="5" fill="#ffffff" stroke="#b7c5d8" stroke-width="1.5"/>
+<text x="64" y="582" font-size="22" fill="#002f6c" font-weight="500" text-anchor="start"><tspan x="64" dy="0">Store / user network</tspan></text>
+<rect x="650" y="465" width="1170" height="460" rx="5" fill="#ffffff" stroke="#0a6cad" stroke-width="2"/>
+<text x="674" y="501" font-size="25" fill="#002f6c" font-weight="600" text-anchor="start"><tspan x="674" dy="0">Selected GPU site</tspan></text>
+<text x="1794" y="501" font-size="19" fill="#0a6cad" font-weight="500" text-anchor="end"><tspan x="1794" dy="0">BlueField DPU + Guardicore*</tspan></text>
+<rect x="950" y="541" width="830" height="354" rx="4" fill="#ffffff" stroke="#b7c5d8" stroke-width="1.5"/>
+<rect x="970" y="525" width="482" height="28" rx="0" fill="#ffffff" stroke="#ffffff" stroke-width="1.5"/>
+<text x="980" y="546" font-size="22" fill="#002f6c" font-weight="500" text-anchor="start"><tspan x="980" dy="0">Tenant A · Linode VM / containers</tspan></text>
+<rect x="976" y="570" width="270" height="300" rx="4" fill="#eef2f7" stroke="#b7c5d8" stroke-width="1.5"/>
+<rect x="1270" y="570" width="482" height="300" rx="4" fill="#eaf6fd" stroke="#a5cfea" stroke-width="1.5"/>
+<text x="994" y="598" font-size="21" fill="#002f6c" font-weight="600" text-anchor="start"><tspan x="994" dy="0">CPU</tspan></text>
+<text x="1290" y="598" font-size="21" fill="#002f6c" font-weight="600" text-anchor="start"><tspan x="1290" dy="0">NVIDIA GPU</tspan></text>
+<rect x="680" y="815" width="220" height="80" rx="4" fill="#f5f7fa" stroke="#0a6cad" stroke-width="1.5" stroke-dasharray="8 6"/>
+<text x="790" y="846" font-size="19" fill="#002f6c" font-weight="500" text-anchor="middle"><tspan x="790" dy="0">Tenant B workload*</tspan></text>
+<text x="790" y="874" font-size="17" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="790" dy="0">Isolated lane</tspan></text>
+<path d="M330 610V295H565" fill="none" stroke="#5b6b80" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-control)" marker-start="url(#platform-control)" stroke-dasharray="8 7"/>
+<text x="347" y="272" font-size="19" fill="#5b6b80" font-weight="400" text-anchor="start"><tspan x="347" dy="0">Session setup</tspan></text>
+<path d="M650 295H800" fill="none" stroke="#5b6b80" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-control)" marker-start="url(#platform-control)" stroke-dasharray="8 7"/>
+<path d="M880 295H1070" fill="none" stroke="#5b6b80" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-control)" marker-start="url(#platform-control)" stroke-dasharray="8 7"/>
+<path d="M1150 295H1380V255H1450" fill="none" stroke="#5b6b80" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-control)" marker-start="url(#platform-control)" stroke-dasharray="8 7"/>
+<path d="M1380 295V365H1450" fill="none" stroke="#5b6b80" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-control)" marker-start="url(#platform-control)" stroke-dasharray="8 7"/>
+<path d="M1320 295V425H630V570H740V600" fill="none" stroke="#5b6b80" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-control)" stroke-dasharray="8 7"/>
+<text x="820" y="412" font-size="18" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="820" dy="0">Reserve site</tspan></text>
+<use href="#platform-globe" x="565" y="255" width="80" height="80" color="#0a6cad"/>
+<text x="605" y="358" font-size="25" fill="#002f6c" font-weight="500" text-anchor="middle"><tspan x="605" dy="0">Akamai entry</tspan></text>
+<text x="605" y="385" font-size="17" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="605" dy="0">Edge / API policy*</tspan></text>
+<use href="#platform-function" x="800" y="255" width="80" height="80" color="#0a6cad"/>
+<text x="840" y="358" font-size="25" fill="#002f6c" font-weight="500" text-anchor="middle"><tspan x="840" dy="0">Functions*</tspan></text>
+<text x="840" y="385" font-size="17" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="840" dy="0">Identity + policy</tspan></text>
+<use href="#platform-selector" x="1070" y="255" width="80" height="80" color="#0a6cad"/>
+<text x="1110" y="358" font-size="25" fill="#002f6c" font-weight="500" text-anchor="middle"><tspan x="1110" dy="0">Site selection*</tspan></text>
+<text x="1110" y="385" font-size="17" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="1110" dy="0">Readiness · capacity · latency · cost</tspan></text>
+<text x="1450" y="203" font-size="19" fill="#5b6b80" font-weight="400" text-anchor="start"><tspan x="1450" dy="0">Other candidate sites*</tspan></text>
+<rect x="1450" y="218" width="340" height="75" rx="4" fill="#ffffff" stroke="#b7c5d8" stroke-width="1.5" stroke-dasharray="8 6"/>
+<use href="#platform-gpu" x="1472" y="235" width="40" height="40" color="#0a6cad"/>
+<text x="1534" y="265" font-size="24" fill="#002f6c" font-weight="500" text-anchor="start"><tspan x="1534" dy="0">GPU site B</tspan></text>
+<rect x="1450" y="328" width="340" height="75" rx="4" fill="#ffffff" stroke="#b7c5d8" stroke-width="1.5" stroke-dasharray="8 6"/>
+<use href="#platform-gpu" x="1472" y="345" width="40" height="40" color="#0a6cad"/>
+<text x="1534" y="375" font-size="24" fill="#002f6c" font-weight="500" text-anchor="start"><tspan x="1534" dy="0">GPU site C</tspan></text>
+<path d="M176 650H292" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)" marker-start="url(#platform-traffic)"/>
+<path d="M368 650H700" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)" marker-start="url(#platform-traffic)"/>
+<text x="510" y="631" font-size="19" fill="#0a6cad" font-weight="500" text-anchor="middle"><tspan x="510" dy="0">HTTPS workload</tspan></text>
+<text x="538" y="682" font-size="18" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="538" dy="0">Audio · text · preview</tspan></text>
+<path d="M780 650H842" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)" marker-start="url(#platform-traffic)"/>
+<path d="M900 650H992" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)" marker-start="url(#platform-traffic)"/>
+<use href="#platform-phone" x="94" y="607" width="82" height="82" color="#0a6cad"/>
+<text x="135" y="727" font-size="25" fill="#002f6c" font-weight="500" text-anchor="middle"><tspan x="135" dy="0">Shopper</tspan></text>
+<text x="135" y="756" font-size="19" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="135" dy="0">Voice / text</tspan></text>
+<use href="#platform-wifi" x="292" y="610" width="76" height="76" color="#0a6cad"/>
+<text x="330" y="727" font-size="22" fill="#002f6c" font-weight="500" text-anchor="middle"><tspan x="330" dy="0">Wi-Fi / router</tspan></text>
+<use href="#platform-shield" x="700" y="600" width="80" height="80" color="#0a6cad"/>
+<text x="740" y="720" font-size="21" fill="#002f6c" font-weight="500" text-anchor="middle"><tspan x="740" dy="0">Cloud Firewall</tspan></text>
+<use href="#platform-lock" x="842" y="617" width="58" height="58" color="#0a6cad"/>
+<text x="870" y="720" font-size="21" fill="#002f6c" font-weight="500" text-anchor="middle"><tspan x="870" dy="0">HTTPS</tspan></text>
+<text x="870" y="745" font-size="17" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="870" dy="0">Caddy</tspan></text>
+<path d="M1258 650H1168" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)"/>
+<path d="M1258 605V860" fill="none" stroke="#0a6cad" stroke-width="2.5"/>
+<path d="M1258 650H1302" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)"/>
+<path d="M1258 605H1630V615" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)"/>
+<path d="M1258 800H1302" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)"/>
+<path d="M1258 860H1630V845" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)"/>
+<path d="M1105 700V755" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)" marker-start="url(#platform-traffic)"/>
+<rect x="992" y="615" width="176" height="85" rx="4" fill="#ffffff" stroke="#b7c5d8" stroke-width="1.5"/>
+<text x="1080" y="649" font-size="25" fill="#002f6c" font-weight="600" text-anchor="middle"><tspan x="1080" dy="0">Gateway</tspan></text>
+<text x="1080" y="677" font-size="16" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="1080" dy="0">Agent orchestration</tspan></text>
+<rect x="992" y="755" width="232" height="90" rx="4" fill="#ffffff" stroke="#b7c5d8" stroke-width="1.5"/>
+<text x="1108" y="786" font-size="18" fill="#002f6c" font-weight="500" text-anchor="middle"><tspan x="1108" dy="0">Catalog · stock · cart</tspan></text>
+<text x="1108" y="813" font-size="17" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="1108" dy="0">Session + references</tspan></text>
+<rect x="1302" y="615" width="180" height="88" rx="4" fill="#ffffff" stroke="#a5cfea" stroke-width="1.5"/>
+<text x="1392" y="651" font-size="21" fill="#002f6c" font-weight="600" text-anchor="middle"><tspan x="1392" dy="0">Speech to text</tspan></text>
+<text x="1392" y="678" font-size="16" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="1392" dy="0">Nemotron Speech</tspan></text>
+<rect x="1540" y="615" width="180" height="88" rx="4" fill="#ffffff" stroke="#a5cfea" stroke-width="1.5"/>
+<text x="1630" y="651" font-size="21" fill="#002f6c" font-weight="600" text-anchor="middle"><tspan x="1630" dy="0">Reasoning</tspan></text>
+<text x="1630" y="678" font-size="16" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="1630" dy="0">Nemotron / vLLM</tspan></text>
+<rect x="1302" y="757" width="180" height="88" rx="4" fill="#ffffff" stroke="#a5cfea" stroke-width="1.5"/>
+<text x="1392" y="793" font-size="21" fill="#002f6c" font-weight="600" text-anchor="middle"><tspan x="1392" dy="0">Speech</tspan></text>
+<text x="1392" y="820" font-size="16" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="1392" dy="0">Magpie TTS</tspan></text>
+<rect x="1540" y="757" width="180" height="88" rx="4" fill="#ffffff" stroke="#a5cfea" stroke-width="1.5"/>
+<text x="1630" y="793" font-size="21" fill="#002f6c" font-weight="600" text-anchor="middle"><tspan x="1630" dy="0">Try-on</tspan></text>
+<text x="1630" y="820" font-size="16" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="1630" dy="0">FLUX.2 klein</tspan></text>
+<text x="1510" y="889" font-size="16" fill="#5b6b80" font-weight="400" text-anchor="middle"><tspan x="1510" dy="0">Private model APIs</tspan></text>
+<path d="M64 1001H124" fill="none" stroke="#0a6cad" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-traffic)"/>
+<text x="140" y="1008" font-size="18" fill="#5b6b80" font-weight="400" text-anchor="start"><tspan x="140" dy="0">Workload / response</tspan></text>
+<path d="M396 1001H456" fill="none" stroke="#5b6b80" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#platform-control)" stroke-dasharray="8 7"/>
+<text x="472" y="1008" font-size="18" fill="#5b6b80" font-weight="400" text-anchor="start"><tspan x="472" dy="0">Placement / reservation</tspan></text>
+<text x="1856" y="1008" font-size="18" fill="#5b6b80" font-weight="400" text-anchor="end"><tspan x="1856" dy="0">Session stays at the selected site</tspan></text>
+<text id="platform-current" x="64" y="1051" font-size="18" fill="#5b6b80" font-weight="400" text-anchor="start"><tspan x="64" dy="0">* Proposed platform layers. Current demo: one Jakarta site, shared GPU services and application-level tenant separation.</tspan></text>
+</svg></div>
+          <div class="architecture-controls" role="group" aria-label="Architecture flow playback">
+            <label class="sr-only" for="flow-scenario">Example request</label>
+            <select id="flow-scenario"><option value="voice">Voice response</option><option value="tryon">Try-on request</option></select>
+            <button id="flow-previous" aria-label="Previous flow step">Previous</button>
+            <button id="flow-play" class="accent">Play</button>
+            <button id="flow-next" aria-label="Next flow step">Next</button>
+            <button id="flow-replay">Replay</button>
+            <button id="flow-fullscreen">Full screen</button>
+          </div><p id="flow-flow-status" class="sr-only" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+      <div id="how-panel-live" class="how-panel" role="tabpanel" aria-labelledby="how-tab-live" hidden>
+        <p class="eyebrow">LATEST OBSERVED TURN</p>
+        <p class="hint how-intro">The path one message takes, in numbered order from 1 to 10 between the browser, the CPU and the GPU, and what the latest turn did. Select a box for its details. Live marks come from the gateway's events and the browser's own observations; nothing here runs on a timer.</p>
+        <p class="hint arch-swipe">The diagram is wider than this screen. Drag it sideways to see all ten boxes.</p>
+        <div class="arch-scroll">
+          <svg id="arch" class="arch" viewBox="0 0 1200 496" role="group" aria-labelledby="arch-title arch-desc">
+            <title id="arch-title">Architecture of one shopping turn</title>
+            <desc id="arch-desc">The browser records speech or takes typed text and sends it to the gateway. On the CPU the gateway admits the turn and Pipecat orchestrates it with session memory. On the GPU, NVIDIA ASR turns speech into text and Nemotron through vLLM decides an answer or a catalog tool call. Catalog tools run on the CPU, the gateway validates the result, Magpie TTS speaks it on the GPU, and the browser fetches the result and the audio and plays it. The microphone opens again after the reply.</desc>
+            <defs>
+              <marker id="arch-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path class="arrowhead" d="M0,0 L10,5 L0,10 z"/>
+              </marker>
+            </defs>
+
+            <rect class="band band-client" x="8" y="8" width="1184" height="104" rx="12"/>
+            <text class="band-label" x="24" y="27">BROWSER · THE SHOPPER'S DEVICE</text>
+            <rect class="band band-cpu" x="8" y="136" width="1184" height="164" rx="12"/>
+            <text class="band-label" x="270" y="155">CPU · ONE GATEWAY PROCESS · <tspan id="arch-site">SITE FROM /v1/info</tspan></text>
+            <rect class="band band-gpu" x="8" y="324" width="1184" height="164" rx="12"/>
+            <text class="band-label on-dark" x="24" y="344">GPU · NVIDIA MODEL SERVICES</text>
+
+            <g class="note on-dark" aria-hidden="true">
+              <text x="40" y="380">Private: loopback only,</text>
+              <text x="40" y="398">vLLM port 8081, speech</text>
+              <text x="40" y="416">port 8082. The browser</text>
+              <text x="40" y="434">never reaches them.</text>
+            </g>
+            <g class="note on-dark" aria-hidden="true">
+              <text x="960" y="380">Each request first writes</text>
+              <text x="960" y="398">a quarantine marker. A</text>
+              <text x="960" y="416">failure keeps it and stops</text>
+              <text x="960" y="434">new turns until recovery.</text>
+            </g>
+
+            <g class="flows" aria-hidden="true">
+              <line class="flow" x1="140" y1="104" x2="140" y2="166" marker-end="url(#arch-arrow)"/>
+              <text class="arrow-label" x="150" y="129">public entry · POST /messages</text>
+              <line class="flow" x1="240" y1="218" x2="268" y2="218" marker-end="url(#arch-arrow)"/>
+              <line class="flow" x1="330" y1="268" x2="330" y2="354" marker-end="url(#arch-arrow)"/>
+              <text class="arrow-label" x="338" y="317">audio</text>
+              <path class="flow typed" d="M430,268 L518,354" marker-end="url(#arch-arrow)"/>
+              <text class="arrow-label" x="492" y="317">typed</text>
+              <line class="flow" x1="470" y1="406" x2="498" y2="406" marker-end="url(#arch-arrow)"/>
+              <line class="flow" x1="630" y1="354" x2="630" y2="270" marker-end="url(#arch-arrow)"/>
+              <text class="arrow-label" x="622" y="317" text-anchor="end">tool call</text>
+              <line class="flow" x1="664" y1="268" x2="664" y2="354" marker-end="url(#arch-arrow)"/>
+              <text class="arrow-label" x="672" y="317">result</text>
+              <line class="flow" x1="700" y1="218" x2="728" y2="218" marker-end="url(#arch-arrow)"/>
+              <line class="flow" x1="800" y1="268" x2="800" y2="354" marker-end="url(#arch-arrow)"/>
+              <text class="arrow-label" x="808" y="317">reply text</text>
+              <line class="flow" x1="930" y1="200" x2="958" y2="200" marker-end="url(#arch-arrow)"/>
+              <path class="flow" d="M930,420 H945 V246 H958" marker-end="url(#arch-arrow)"/>
+              <text class="arrow-label" x="952" y="317">WAV</text>
+              <line class="flow" x1="1060" y1="168" x2="1060" y2="106" marker-end="url(#arch-arrow)"/>
+              <text class="arrow-label" x="1050" y="129" text-anchor="end">GET result · GET audio</text>
+              <path class="flow loop" d="M960,68 H240" marker-end="url(#arch-arrow)"/>
+              <text class="arrow-label loop-label" x="600" y="60" text-anchor="middle">after the reply plays, the microphone opens again</text>
+              <text class="not-built" x="600" y="92" text-anchor="middle">Not built: interrupting a reply (barge-in), streaming speech, live partial transcripts</text>
+            </g>
+
+            <g id="arch-node-mic" class="node client" data-node="mic" tabindex="0" role="button" aria-pressed="false" aria-controls="arch-detail" aria-label="Step 1, browser capture. Show details.">
+              <rect class="ring" x="35" y="27" width="210" height="82" rx="14"/>
+              <rect class="box" x="40" y="32" width="200" height="72" rx="10"/>
+              <circle class="num" cx="58" cy="52" r="11"/><text class="num-t" x="58" y="56">1</text>
+              <text class="title" x="76" y="57">Browser capture</text>
+              <text class="sub" x="54" y="78">microphone · silence gate</text>
+              <text id="arch-st-mic" class="status" x="54" y="96"></text>
+            </g>
+            <g id="arch-node-gateway" class="node cpu" data-node="gateway" tabindex="0" role="button" aria-pressed="false" aria-controls="arch-detail" aria-label="Step 2, gateway and admission. Show details.">
+              <rect class="ring" x="35" y="163" width="210" height="110" rx="14"/>
+              <rect class="box" x="40" y="168" width="200" height="100" rx="10"/>
+              <circle class="num" cx="58" cy="188" r="11"/><text class="num-t" x="58" y="192">2</text>
+              <text class="title" x="76" y="194">Gateway</text>
+              <text class="sub" x="54" y="218">auth · 2 retained sessions</text>
+              <text class="sub" x="54" y="236">1 turn runs, 1 may wait</text>
+              <text id="arch-st-gateway" class="status" x="54" y="258"></text>
+            </g>
+            <g id="arch-node-orchestrator" class="node cpu" data-node="orchestrator" tabindex="0" role="button" aria-pressed="false" aria-controls="arch-detail" aria-label="Step 3, Pipecat orchestration and session memory. Show details.">
+              <rect class="ring" x="265" y="163" width="210" height="110" rx="14"/>
+              <rect class="box" x="270" y="168" width="200" height="100" rx="10"/>
+              <circle class="num" cx="288" cy="188" r="11"/><text class="num-t" x="288" y="192">3</text>
+              <text class="title" x="306" y="194">Pipecat pipeline</text>
+              <text class="sub" x="284" y="218">session memory, RAM only:</text>
+              <text class="sub" x="284" y="236">chat · cards · selection · cart</text>
+              <text id="arch-st-orchestrator" class="status" x="284" y="258"></text>
+            </g>
+            <g id="arch-node-asr" class="node gpu" data-node="asr" tabindex="0" role="button" aria-pressed="false" aria-controls="arch-detail" aria-label="Step 4, NVIDIA speech recognition. Show details.">
+              <rect class="ring" x="265" y="351" width="210" height="110" rx="14"/>
+              <rect class="box" x="270" y="356" width="200" height="100" rx="10"/>
+              <circle class="num" cx="288" cy="376" r="11"/><text class="num-t" x="288" y="380">4</text>
+              <text class="title" x="306" y="382">NVIDIA ASR</text>
+              <text class="sub" x="284" y="406">speech to text</text>
+              <text class="sub" x="284" y="424">typed text skips it</text>
+              <text id="arch-st-asr" class="status" x="284" y="446"></text>
+            </g>
+            <g id="arch-node-llm" class="node gpu" data-node="llm" tabindex="0" role="button" aria-pressed="false" aria-controls="arch-detail" aria-label="Step 5, Nemotron through vLLM. Show details.">
+              <rect class="ring" x="495" y="351" width="210" height="110" rx="14"/>
+              <rect class="box" x="500" y="356" width="200" height="100" rx="10"/>
+              <circle class="num" cx="518" cy="376" r="11"/><text class="num-t" x="518" y="380">5</text>
+              <text class="title" x="536" y="382">Nemotron · vLLM</text>
+              <text class="sub" x="514" y="406">answers or calls a tool</text>
+              <text class="sub" x="514" y="424">≤5 decisions · ≤4 tools</text>
+              <text id="arch-st-llm" class="status" x="514" y="446"></text>
+            </g>
+            <g id="arch-node-tools" class="node cpu" data-node="tools" tabindex="0" role="button" aria-pressed="false" aria-controls="arch-detail" aria-label="Step 6, catalog tools. Show details.">
+              <rect class="ring" x="495" y="163" width="210" height="110" rx="14"/>
+              <rect class="box" x="500" y="168" width="200" height="100" rx="10"/>
+              <circle class="num" cx="518" cy="188" r="11"/><text class="num-t" x="518" y="192">6</text>
+              <text class="title" x="536" y="194">Catalog tools</text>
+              <text class="sub" x="514" y="218">search · details · stock · cart</text>
+              <text class="sub" x="514" y="236">reads catalog JSON + photos</text>
+              <text id="arch-st-tools" class="status" x="514" y="258"></text>
+            </g>
+            <g id="arch-node-result" class="node cpu" data-node="result" tabindex="0" role="button" aria-pressed="false" aria-controls="arch-detail" aria-label="Step 7, validated result. Show details.">
+              <rect class="ring" x="725" y="163" width="210" height="110" rx="14"/>
+              <rect class="box" x="730" y="168" width="200" height="100" rx="10"/>
+              <circle class="num" cx="748" cy="188" r="11"/><text class="num-t" x="748" y="192">7</text>
+              <text class="title" x="766" y="194">Validated result</text>
+              <text class="sub" x="744" y="218">cards · stock line · cart</text>
+              <text class="sub" x="744" y="236">from catalog ids only</text>
+              <text id="arch-st-result" class="status" x="744" y="258"></text>
+            </g>
+            <g id="arch-node-tts" class="node gpu" data-node="tts" tabindex="0" role="button" aria-pressed="false" aria-controls="arch-detail" aria-label="Step 8, Magpie speech synthesis. Show details.">
+              <rect class="ring" x="725" y="351" width="210" height="110" rx="14"/>
+              <rect class="box" x="730" y="356" width="200" height="100" rx="10"/>
+              <circle class="num" cx="748" cy="376" r="11"/><text class="num-t" x="748" y="380">8</text>
+              <text class="title" x="766" y="382">Magpie TTS</text>
+              <text class="sub" x="744" y="406">reply text to speech</text>
+              <text class="sub" x="744" y="424">longer reply, longer wait</text>
+              <text id="arch-st-tts" class="status" x="744" y="446"></text>
+            </g>
+            <g id="arch-node-delivery" class="node cpu" data-node="delivery" tabindex="0" role="button" aria-pressed="false" aria-controls="arch-detail" aria-label="Step 9, result and audio delivery. Show details.">
+              <rect class="ring" x="955" y="163" width="210" height="110" rx="14"/>
+              <rect class="box" x="960" y="168" width="200" height="100" rx="10"/>
+              <circle class="num" cx="978" cy="188" r="11"/><text class="num-t" x="978" y="192">9</text>
+              <text class="title" x="996" y="194">Delivery</text>
+              <text class="sub" x="974" y="218">events stream as NDJSON,</text>
+              <text class="sub" x="974" y="236">then result, then audio</text>
+              <text id="arch-st-delivery" class="status" x="974" y="258"></text>
+            </g>
+            <g id="arch-node-playback" class="node client" data-node="playback" tabindex="0" role="button" aria-pressed="false" aria-controls="arch-detail" aria-label="Step 10, browser playback. Show details.">
+              <rect class="ring" x="955" y="27" width="210" height="82" rx="14"/>
+              <rect class="box" x="960" y="32" width="200" height="72" rx="10"/>
+              <circle class="num" cx="978" cy="52" r="11"/><text class="num-t" x="978" y="56">10</text>
+              <text class="title" x="996" y="57">Browser playback</text>
+              <text class="sub" x="974" y="78">cards · reply text · WAV</text>
+              <text id="arch-st-playback" class="status" x="974" y="96"></text>
+            </g>
+          </svg>
+        </div>
+        <p class="arch-legend hint">Blue outline: where the latest observed event came from. ✓ observed and completed, ○ skipped with its reason, ? not observed, × failed or refused.</p>
+        <div class="arch-below">
+          <section id="arch-detail" class="arch-detail" aria-live="polite" aria-labelledby="arch-detail-title">
+            <p id="arch-detail-kicker" class="eyebrow">COMPONENT</p>
+            <h3 id="arch-detail-title">Select a box in the diagram</h3>
+            <p id="arch-detail-text">Each box is one part of the path. Its card says what it does, where the code lives, which model it runs and how long it keeps data.</p>
+            <dl id="arch-detail-facts" class="arch-facts"></dl>
+          </section>
+          <section class="arch-live" aria-labelledby="how-live-heading">
+            <div class="panel-head"><h3 id="how-live-heading">This turn</h3><span id="how-trace" class="small-badge">NO TURN YET</span></div>
+            <p id="how-live-note" class="hint">Sign in and send a message to see a live turn.</p>
+            <dl id="how-meta" class="how-meta"></dl>
+            <table id="how-timings" class="timings" hidden>
+              <caption class="sr-only">Stages of the latest turn with their status and measured duration</caption>
+              <thead><tr><th scope="col">Stage</th><th scope="col">Status</th><th scope="col">Duration</th></tr></thead>
+              <tbody id="how-steps"></tbody>
+            </table>
+            <p id="how-timings-note" class="hint timings-note" hidden>Durations are in milliseconds (ms). Gateway rows use the gateway's clock, browser rows the browser's. They are never subtracted from each other.</p>
+            <details id="raw-trace" class="raw-trace">
+              <summary>Raw redacted trace</summary>
+              <p class="hint">The gateway's events for the latest turn as received: ids, codes, durations and counts. No tokens, media, transcripts or product text.</p>
+              <pre id="raw">[]</pre>
+            </details>
+          </section>
+        </div>
+      </div>
+
+      <div id="how-panel-video" class="how-panel" role="tabpanel" aria-labelledby="how-tab-video" hidden>
+        <p id="walkthrough-status" class="walkthrough-status">Not recorded yet. Recorded footage will show the build and date it was made from.</p>
+        <figure id="walkthrough-player" class="walkthrough-player" hidden>
+          <p id="walkthrough-recorded" class="recorded-badge"><span class="recorded-label">RECORDED</span> <span id="walkthrough-meta"></span>. Footage of an earlier session, not live activity.</p>
+          <video id="walkthrough-video" controls playsinline preload="none" aria-describedby="walkthrough-recorded">
+            <track id="walkthrough-track" kind="captions" srclang="en" label="English captions">
+          </video>
+        </figure>
+        <div class="walkthrough-below">
+          <section aria-labelledby="walkthrough-chapters-heading">
+            <h3 id="walkthrough-chapters-heading" class="chapters-heading">Planned chapters</h3>
+            <ol id="walkthrough-chapters" class="chapters">
+              <li>Conversation: start, speak, automatic stop, reply, reopen</li>
+              <li>Product focus</li>
+              <li>Stock and cart</li>
+              <li>The architecture tab</li>
+              <li>The same request's observed flow</li>
+            </ol>
+          </section>
+          <section aria-labelledby="walkthrough-transcript-heading">
+            <h3 id="walkthrough-transcript-heading" class="chapters-heading">Transcript</h3>
+            <div id="walkthrough-transcript" class="walkthrough-transcript"><p class="hint">Transcript: available with the recording.</p></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <footer><span>AKAMAI CLOUD · RETAIL VOICE REFERENCE</span><span id="backend-footer">Backend configuration pending</span></footer>
+  </main>
+</body>
+</html>

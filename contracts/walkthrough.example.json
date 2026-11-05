@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "build": "0000000",
+  "recorded": "2026-11-05",
+  "title": "Retail voice assistant on one Akamai GPU: a walkthrough",
+  "duration_seconds": 330,
+  "captions": "walkthrough.vtt",
+  "chapters": [
+    {"start": 0, "title": "Conversation: start, speak, automatic stop, reply, reopen"},
+    {"start": 75, "title": "Product focus"},
+    {"start": 130, "title": "Stock and cart"},
+    {"start": 195, "title": "The architecture tab"},
+    {"start": 260, "title": "The same request's observed flow"}
+  ]
+}

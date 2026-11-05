@@ -1,0 +1,5 @@
+# Optional isolated image environment. Combined GPU fit is not yet verified.
+diffusers==0.37.1
+transformers==4.57.3
+accelerate==1.12.0
+safetensors==0.7.0

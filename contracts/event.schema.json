@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "session_id",
+    "trace_id",
+    "turn_id",
+    "span_id",
+    "parent_span_id",
+    "source",
+    "sequence",
+    "mode",
+    "status",
+    "tenant",
+    "site_id"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "session_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "trace_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "turn_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "span_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "event_type": {
+      "enum": [
+        "turn.started",
+        "turn.waiting",
+        "asr.completed",
+        "model.completed",
+        "context.trimmed",
+        "tool.allowed",
+        "tool.completed",
+        "tool.denied",
+        "tts.completed",
+        "turn.completed",
+        "turn.failed",
+        "preview.started",
+        "preview.completed"
+      ]
+    },
+    "mode": {
+      "enum": [
+        "mock",
+        "nvidia"
+      ]
+    },
+    "source": {
+      "enum": [
+        "regional-gateway"
+      ]
+    },
+    "status": {
+      "enum": [
+        "running",
+        "waiting",
+        "complete",
+        "failed",
+        "denied"
+      ]
+    },
+    "tenant": {
+      "enum": [
+        "retailer-a",
+        "retailer-b"
+      ]
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "parent_span_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "site_id": {
+      "type": "string"
+    },
+    "duration_ms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "reason": {
+      "type": "string"
+    },
+    "result_path": {
+      "type": "string",
+      "pattern": "^/v1/sessions/[a-f0-9]+/turns/[a-f0-9]+/result$"
+    },
+    "audio_path": {
+      "type": "string",
+      "pattern": "^/v1/sessions/[a-f0-9]+/turns/[a-f0-9]+/audio$",
+      "description": "On turn.completed when the turn produced reply audio: the protected audio route, so the browser can fetch it alongside the result. Needs the session token like the result."
+    },
+    "audio_kind": {
+      "enum": [
+        "test_tone",
+        "synthesized_speech"
+      ],
+      "description": "With audio_path: a mock test tone or NVIDIA synthesized speech, as the result route labels it."
+    },
+    "region": {
+      "type": "string"
+    },
+    "profile_digest": {
+      "type": "string"
+    },
+    "model_id": {
+      "type": "string"
+    },
+    "model_revision": {
+      "type": "string"
+    },
+    "pipeline": {
+      "const": "pipecat"
+    },
+    "queued_ms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "tool_name": {
+      "enum": [
+        "lookup_inventory",
+        "search_products",
+        "get_product_details",
+        "check_availability",
+        "add_to_cart",
+        "unknown"
+      ]
+    },
+    "tool_call_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "result_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "catalog_version": {
+      "type": "string"
+    },
+    "input_source": {
+      "enum": [
+        "audio",
+        "text"
+      ]
+    },
+    "dropped_exchanges": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "kept_exchanges": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "decision": {
+      "enum": [
+        "tool_call",
+        "answer",
+        "malformed"
+      ]
+    },
+    "prompt_tokens": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "completion_tokens": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "cache_hit": {"type": "boolean"},
+    "preview_kind": {
+      "enum": [
+        "live",
+        "prepared"
+      ]
+    }
+  }
+}

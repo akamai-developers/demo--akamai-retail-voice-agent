@@ -1,0 +1,30 @@
+/* Presentation canvas uses the current site's light Akamai template and bundled fonts. */
+.architecture-stage { display: flex; flex-direction: column; height: clamp(340px, calc(100dvh - 310px), 1100px); background: #fff; border: 1px solid var(--ak-border); border-radius: var(--ak-radius-md); overflow: hidden; }
+.architecture-canvas { flex: 1; min-height: 0; }
+.architecture-canvas > svg { display: block; width: 100%; height: 100%; }
+.architecture-canvas text { font-family: var(--ak-font-sans); }
+.architecture-controls { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; padding: 8px 12px; border-top: 1px solid var(--ak-border); background: var(--ak-bg); flex-shrink: 0; }
+.architecture-controls button, .architecture-controls select { font-size: .8rem; padding: 6px 12px; min-height: 38px; }
+.architecture-controls select { width: auto; font-family: var(--ak-font-sans); color: var(--ak-text); background: var(--ak-surface); border: 1px solid var(--ak-border-strong); border-radius: var(--ak-radius-sm); }
+.architecture-controls #flow-play { min-width: 72px; }
+.flow-route { fill: none; stroke: var(--ak-orange); stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
+.flow-focus { fill: none; stroke: var(--ak-orange); stroke-width: 3; pointer-events: none; }
+.flow-marker { fill: var(--ak-orange); stroke: #fff; stroke-width: 3; pointer-events: none; }
+.architecture-canvas .flow-kicker { font: 500 17px var(--ak-font-mono); fill: #a25300; letter-spacing: 1px; }
+.flow-heading { font-size: 25px; font-weight: 600; fill: var(--ak-navy); }
+.flow-detail { font-size: 17px; fill: var(--ak-text-muted); }
+.architecture-presenting { overflow: hidden; }
+#how.presenting { position: fixed; inset: 0; z-index: 50; margin: 0; padding: 12px; border: 0; border-radius: 0; display: flex; flex-direction: column; background: #fff; }
+#how.presenting > .panel-head { margin-bottom: 8px; flex-shrink: 0; }
+#how.presenting > .panel-head h1 { font-size: 1rem; }
+#how.presenting > .panel-head .small-badge, #how.presenting > .hint, #how.presenting .how-tabs { display: none; }
+#how.presenting #how-panel-arch { flex: 1; min-height: 0; }
+#how.presenting .architecture-stage { height: 100%; border: 0; }
+.architecture-stage:fullscreen { width: 100vw; height: 100dvh; border: 0; border-radius: 0; }
+@media (max-width: 600px) {
+  .architecture-stage { height: 330px; }
+  .architecture-controls { gap: 6px; }
+  .architecture-controls button, .architecture-controls select { min-height: 44px; }
+  #flow-fullscreen { display: none; }
+  #how.presenting { padding: 8px; }
+}
