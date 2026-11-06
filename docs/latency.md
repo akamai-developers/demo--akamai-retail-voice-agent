@@ -38,3 +38,9 @@ These HTTP measurements exclude the time spent speaking, the browser's silence-d
 For an Amsterdam versus another-region comparison, keep the client in the same location, preferably the actual presentation site, and repeat the same warm-up and measured workload. Compare completed-turn medians alongside failure counts, model timings, reply sizes, and GPU load. Do not attribute a latency difference to geography when models, GPU types, or settings differ.
 
 Measure try-on separately using its `preview.completed` duration and client image-arrival timing. Image generation has a different workload from a voice reply. No GPU-region performance claim should be made until the corresponding hardware run is recorded.
+
+## Recorded Amsterdam run
+
+The November 5, 2026 run completed 50 of 50 turns from Chicago over an SSH tunnel. The warm spoken-request median was 2.29 seconds until complete reply audio arrived. This is not a San Francisco measurement or end-of-speech-to-playback timing. [The verification report](verification.md) separates cold startup, browser playback, and live image generation; [its receipt](ams-verification.json) includes the aggregate measurements and evidence hashes.
+
+The first cold greeting took 40.01 seconds. A reboot repeated a roughly 40-second first greeting, so a passing readiness probe is not sufficient preparation for a live demo. Run the unmeasured warmup after every model-service restart and before the measured workload or presentation.

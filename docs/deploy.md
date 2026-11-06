@@ -1,6 +1,8 @@
-# Deploy to an existing GPU host
+# Deploy to a dedicated GPU host
 
-This installs a single-host demo. It does not create a Linode, select a region automatically, or install a GPU driver.
+This installs a single-host demo. It does not create a Linode, select a region automatically, or install a GPU driver. Use a newly allocated host or one dedicated to this application. Do not apply these service or firewall commands to an existing deployment.
+
+The pinned GPU dependencies have unresolved security advisories. Read [Validation](validation.md) before installing; the functional hardware run does not clear these dependencies for public release.
 
 ## 1. Prepare the host
 
@@ -76,9 +78,11 @@ From your laptop, create a tunnel:
 ssh -N -L 8765:127.0.0.1:8765 YOUR_USER@YOUR_GPU_HOST
 ```
 
-Open <http://localhost:8765> and sign in using a retailer key from the host's `.local/gateway.env`. Localhost supports browser microphone access. Use this path for the first functional check.
+Open <http://localhost:8765> and sign in using a retailer key from the host's `.local/gateway.env`. Localhost supports browser microphone access. Use this path for the first functional check. Warm the models using [the latency procedure](latency.md) after each restart. The verified host took about 40 seconds for its first cold greeting despite passing readiness checks.
 
 ## 4. Optional public HTTPS
+
+This optional configuration has not been verified on the new Amsterdam host. That host permits SSH, HTTP, and HTTPS only from two operator addresses and uses the tunnel above. Keep those access restrictions when repeating that deployment; the certificate-validation setup below is a different access policy.
 
 Point a DNS A record at the host. Add an AAAA record only if the host and firewall are configured for IPv6. Configure a Linode Cloud Firewall with inbound default DROP, SSH restricted to your administrator CIDR, TCP 80 open for ACME certificate validation, and TCP 443 limited to the audience CIDRs. Allow outbound connections for package/model downloads and certificate renewal. Apply equivalent host firewall rules. Never expose ports 8765, 8081, 8082, or 8083.
 
