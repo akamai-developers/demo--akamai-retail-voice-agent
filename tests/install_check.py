@@ -35,6 +35,7 @@ def main():
                 ".venv",
                 ".speech-venv",
                 ".tryon-venv",
+                ".security-venv",
                 ".local",
                 ".git",
                 "requirements-listed",

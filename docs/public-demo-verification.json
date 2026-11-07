@@ -1,0 +1,61 @@
+{
+  "created_utc": "2026-11-06T20:37:36.410300+00:00",
+  "release_ready": false,
+  "reference": {
+    "path": "src/retail_voice/data/demo/fictional-person.png",
+    "sha256": "0a0cf54909efc9cf01b42f1975dc3d7612e88695bf28e5c75a9ae95322441220",
+    "fictional": true,
+    "source_photographs_used": false
+  },
+  "prepared_host_installation": {
+    "fresh_export_setup": true,
+    "demo_person_configured": true,
+    "reference_sha256": "0a0cf54909efc9cf01b42f1975dc3d7612e88695bf28e5c75a9ae95322441220",
+    "installer_exit_code": 1,
+    "host_gate_blocked_install": true,
+    "existing_deployments_modified": false,
+    "new_cloud_resources_created": false
+  },
+  "prepared_host_installation_receipt_sha256": "b4421a55d193493d7ea6df0b042f45bb1e1908082de1a8f9f8be10f1f892f4da",
+  "runtime_test": {
+    "passed": true,
+    "reference_sha256": "0a0cf54909efc9cf01b42f1975dc3d7612e88695bf28e5c75a9ae95322441220",
+    "gateway_fresh_install": true,
+    "models_reused": true,
+    "gpu_runtime_environments_reused": true,
+    "shopping_turns": 9,
+    "shopping_checks": {
+      "preview_requires_authentication": true,
+      "unavailable_items_never_previewed": true,
+      "unavailable_items_never_added": true,
+      "yellow_medium_stock_reported": true,
+      "misunderstanding_acknowledged": true,
+      "switched_to_drizzle": true,
+      "generated_on_gpu": true,
+      "correct_selected_variant": true,
+      "add_after_preview_does_not_generate_again": true,
+      "cart_retains_previewed_variant": true,
+      "cart_quantity_one": true
+    },
+    "latency_workload_turns": 25,
+    "baseline_services_restored": true,
+    "receipt_sha256": "dbd132036cb2396027aa213c1c5bc56ee7c7cc6736bca96ab1904f450f69a7e4"
+  },
+  "source_checks": {
+    "python_tests": 286,
+    "format_lint_types_javascript": "passed",
+    "fresh_wheel_includes_fictional_person_and_provenance": true
+  },
+  "limitations": [
+    "The full GPU installer stopped at its host security gate.",
+    "Fresh cloud resource creation and bootstrap were not run.",
+    "The runtime test reused the previously scanned GPU environments and downloaded models."
+  ],
+  "reference_preservation_prompt_check": {
+    "generated_on_gpu": true,
+    "reference_sha256": "0a0cf54909efc9cf01b42f1975dc3d7612e88695bf28e5c75a9ae95322441220",
+    "output_sha256": "4019ff14389f695ab30e31aba591a1539007e47201d9ed6ca7665b10f76fd90d",
+    "prompt_sha256": "5d31d6ac5409a208c138f7dfb8d9a4a74e40c56d4cff54acfadc25011e2dcf8b",
+    "generation_seconds": 9.492
+  }
+}

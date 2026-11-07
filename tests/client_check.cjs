@@ -313,7 +313,7 @@ const submit = form => byId(form).onsubmit({ preventDefault() {} });
   assert.equal(arch('asr').getAttribute('aria-pressed'), 'false');
   assert.match(byId('arch-detail-facts').textContent, /16,384 tokens per prompt/);
   arch('gateway').onkeydown(key(' '));
-  assert.match(byId('arch-detail-facts').textContent, /Caddy on 443 stands in front of this gateway/);
+  assert.match(byId('arch-detail-facts').textContent, /SSH tunnel.*Caddy on 443/);
   arch('gateway').onkeydown(key('x'));
   assert.equal(byId('arch-detail-title').textContent, 'Gateway and admission');
   // Tabs: a click or the arrow keys select; only the selected tab is in the Tab order.

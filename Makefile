@@ -1,5 +1,11 @@
+PYTHON ?= python3.12
+.DEFAULT_GOAL := help
+
 .PHONY: help setup run dev-mock dev-nvidia serve-speech preflight smoke-gpu check test-integration test-ui test-tryon-ui test-architecture-ui test-package
 help:
+	@echo "Cloud: env, gpu-check, deploy, status, tunnel, key, cloud-check, smoke, gpu-logs, destroy"
+	@echo "  env writes .env; deploy creates one paid site; destroy deletes only that site"
+	@echo "  status shows saved IP, browser URL, API key location, and deployment timing"
 	@echo "setup: create private keys and install the locked local environment"
 	@echo "run: start the loopback gateway using .local/gateway.env"
 	@echo "dev-mock: loopback mock gateway (requires three exported credentials)"
@@ -37,8 +43,8 @@ smoke-gpu:
 
 check:
 	python scripts/public_check.py
-	python -m ruff format --check src tests tools scripts
-	python -m ruff check src tests tools scripts
+	python -m ruff format --check src tests tools scripts deploy
+	python -m ruff check src tests tools scripts deploy
 	python -m mypy --check-untyped-defs --ignore-missing-imports src
 	PYTHONPATH=src python -m unittest discover -s tests -v
 	for file in src/retail_voice/web/*.js; do node --check $$file || exit 1; done
@@ -46,6 +52,10 @@ check:
 	node tests/audio_check.mjs
 	node tests/vad_check.mjs
 	node --no-warnings tests/transport_check.mjs
+
+security:
+	python scripts/security.py dependencies
+	python scripts/security.py release
 
 test-integration:
 	PYTHONPATH=src python -m unittest discover -s tests -v
@@ -61,3 +71,35 @@ test-architecture-ui:
 
 test-package:
 	python tests/install_check.py
+
+# Cloud lifecycle. These commands use .env and the selected site's private state.
+.PHONY: env gpu-check deploy status tunnel key cloud-check smoke gpu-logs destroy
+env:
+	$(PYTHON) scripts/cloud.py env
+
+gpu-check:
+	$(PYTHON) scripts/cloud.py gpu-check
+
+deploy:
+	$(PYTHON) scripts/cloud.py deploy
+
+status:
+	$(PYTHON) scripts/cloud.py status
+
+tunnel:
+	$(PYTHON) scripts/cloud.py tunnel
+
+key:
+	$(PYTHON) scripts/cloud.py key
+
+cloud-check:
+	$(PYTHON) scripts/cloud.py check
+
+smoke:
+	$(PYTHON) scripts/cloud.py smoke
+
+gpu-logs:
+	$(PYTHON) scripts/cloud.py logs
+
+destroy:
+	$(PYTHON) scripts/cloud.py destroy

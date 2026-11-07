@@ -1,0 +1,17 @@
+{
+  "filename": "retail-demo.gif",
+  "sha256": "4ad09b83fb397eb88474a385b9fc1358c6d4e3026f5a3d40aee8fc08a9dc28df",
+  "created_utc": "2026-11-06T22:21:08.635005+00:00",
+  "width": 1120,
+  "height": 738,
+  "duration_ms": 26010,
+  "loop": true,
+  "audio": false,
+  "source": "Browser recording of the running Amsterdam GPU deployment.",
+  "source_build": "8aa9ae6a3a628bd81fddf629fcfd4efbab8e47ea",
+  "interaction": "A synthetic spoken question enters through the browser microphone and live ASR. Typed follow-ups check navy medium stock and add the Drizzle Anorak to the cart.",
+  "timing": "Original browser timing retained, sampled at 8 frames per second.",
+  "private_photos_shown": false,
+  "credentials_visible": false,
+  "review": "Captured after sign-in. Search, stock and cart frames inspected. No person images shown."
+}

@@ -75,12 +75,26 @@ def init():
         write_env({"DEMO_MODE": "mock", "TRYON_MODE": "disabled", **values})
 
 
+def ensure_pip(python):
+    run(
+        python,
+        "-m",
+        "pip",
+        "install",
+        "--require-hashes",
+        "--only-binary=:all:",
+        "-r",
+        "deploy/installer-requirements.lock.txt",
+    )
+
+
 def setup():
     if sys.version_info[:2] != (3, 12) or os.name != "posix":
         raise ValueError("Use Python 3.12 on macOS or Linux.")
     init()
     if not PYTHON.exists():
         venv.EnvBuilder(with_pip=True).create(ROOT / ".venv")
+    ensure_pip(PYTHON)
     run(PYTHON, "-m", "pip", "install", "--require-hashes", "-r", "requirements.lock.txt")
     run(PYTHON, "-m", "pip", "install", "--no-deps", "--no-build-isolation", "-e", ".")
     run(PYTHON, "-m", "pip", "check")

@@ -356,9 +356,14 @@ class NvidiaTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(report["checks"]["pinned_artifacts"])
 
     async def test_vlm_command_uses_pins_loopback_and_single_request_limits(self):
+        self.settings = self.settings.model_copy(update={"vllm_image": "sha256:" + "a" * 64})
         command = vlm_command(self.settings)
-        self.assertIn(model_manifest()["runtime"]["vllm_image"], command)
-        self.assertEqual(command[command.index("--host") + 1], "127.0.0.1")
+        self.assertIn(self.settings.vllm_image, command)
+        self.assertEqual(command[command.index("--host") + 1], "0.0.0.0")
+        self.assertIn("127.0.0.1:8081:8081", command)
+        self.assertIn("no-new-privileges", command)
+        self.assertNotIn("host", command)
+        self.assertIn(f"{self.settings.vlm_cache_dir}:/tmp", command)
         self.assertEqual(command[command.index("--max-num-seqs") + 1], "1")
         self.assertNotIn("--allowed-local-media-path", command)
         self.assertIn("HF_HUB_OFFLINE=1", command)

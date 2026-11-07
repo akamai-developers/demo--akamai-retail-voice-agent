@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "filename": "fictional-person.png",
+  "sha256": "0a0cf54909efc9cf01b42f1975dc3d7612e88695bf28e5c75a9ae95322441220",
+  "fictional": true,
+  "source_images": [],
+  "created": "2026-11-06",
+  "generator": "Built-in image generation tool",
+  "prompt": "Use case: photorealistic-natural. Asset type: public software demo reference image for virtual clothing try-on. Generate one entirely fictional adult woman, around 35, medium brown skin, short curly dark hair, neutral friendly expression. Full body from head to shoes, facing camera, standing straight with arms relaxed a little away from torso, both hands visible. Plain light gray short-sleeve T-shirt, straight charcoal trousers and simple white sneakers. Uncluttered light gray studio background and soft even lighting. Realistic anatomy and skin texture, natural proportions. Portrait composition, approximately 768 by 1024 pixels, comfortable margin around head and feet. This is a made-up person created from this text only. Do not base the person on any reference photo, real person, celebrity or conversation image. No logos, no text, no watermark. Opaque background.",
+  "review_status": "Visually reviewed for a fully clothed adult, complete body, and neutral try-on pose",
+  "purpose": "Public clothing try-on demonstration. Not a real customer's or employee's photo."
+}

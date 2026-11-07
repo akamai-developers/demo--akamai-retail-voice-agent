@@ -1,6 +1,7 @@
 .venv/
 .speech-venv/
 .tryon-venv/
+.security-venv/
 .local/
 .env
 .env.*

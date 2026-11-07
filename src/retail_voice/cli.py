@@ -97,15 +97,24 @@ async def preflight(settings):
 
 
 def vlm_command(settings):
-    runtime = model_manifest()["runtime"]
+    if not settings.vllm_image:
+        raise ValueError("Build and audit the model image with scripts/gpu.py install first")
     return [
         "docker",
         "run",
         "--rm",
         "--name",
         "retail-vlm",
-        "--network",
-        "host",
+        "--publish",
+        "127.0.0.1:8081:8081",
+        "--user",
+        f"{os.getuid()}:{os.getgid()}",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--shm-size",
+        "2g",
         "--gpus",
         "device=0",
         "--env",
@@ -116,12 +125,14 @@ def vlm_command(settings):
         "VLLM_NO_USAGE_STATS=1",
         "--volume",
         f"{settings.artifact('vlm')}:/models:ro",
-        runtime["vllm_image"],
+        "--volume",
+        f"{settings.vlm_cache_dir}:/tmp",
+        settings.vllm_image,
         "/models",
         "--served-model-name",
         NvidiaBackend.served_model,
         "--host",
-        "127.0.0.1",
+        "0.0.0.0",
         "--port",
         "8081",
         "--trust-remote-code",
@@ -738,6 +749,11 @@ def main():
             command = vlm_command(settings)
             if args.start:
                 artifact_check(settings)
+                cache = settings.vlm_cache_dir
+                if cache.is_symlink():
+                    raise ValueError("Refusing a symlink for the model compiler cache")
+                cache.mkdir(parents=True, exist_ok=True, mode=0o700)
+                cache.chmod(0o700)
                 subprocess.run(command, check=True)
             else:
                 print(shlex.join(command))

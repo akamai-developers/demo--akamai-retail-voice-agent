@@ -1,5 +1,7 @@
 # Measure latency
 
+[The November 7 fresh-site run](fresh-site-verification.md#measured-latency) records current measurements: a 1.94-second median spoken-request response through SSH to Amsterdam, with five voice samples. The earlier run below remains historical evidence.
+
 Measure real inference from the intended client location. Mock timing checks validate the measurement code only. They cannot predict speech response time or compare GPU regions.
 
 ## Prepare an isolated run

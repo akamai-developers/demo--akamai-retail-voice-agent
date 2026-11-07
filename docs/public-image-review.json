@@ -1,0 +1,9 @@
+{
+  "git_history_commits": 4,
+  "historical_raster_blobs": 48,
+  "unapproved_historical_raster_blobs": 0,
+  "private_reference_matches_in_history": 0,
+  "current_synthetic_products_verified": 48,
+  "bundled_person": "src/retail_voice/data/demo/fictional-person.png",
+  "person_created_from_text_without_source_photographs": true
+}

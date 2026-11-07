@@ -1,0 +1,162 @@
+{
+  "created_utc": "2026-11-06T19:57:47.675061+00:00",
+  "release_cleared": false,
+  "hardware": {
+    "region": "nl-ams",
+    "gpu": "RTX PRO 6000 Blackwell Server Edition",
+    "memory_gib": 96,
+    "scope": "Separately created test host. Existing deployments were not updated."
+  },
+  "local_checks": {
+    "python_tests": 284,
+    "format_lint_types_javascript": "passed",
+    "fresh_wheel_installation": "passed",
+    "architecture_browser_viewports": [
+      [
+        1920,
+        1080
+      ],
+      [
+        1512,
+        982
+      ],
+      [
+        1366,
+        1024
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "gateway_detail_screenshots_visually_reviewed": true,
+    "git_history_secret_scan": {
+      "commits": 4,
+      "findings": 0
+    }
+  },
+  "dependency_locks": [
+    {
+      "path": "requirements.lock.txt",
+      "sha256": "6e55d6c638631a255eff830f98a7b679fe47323828e706aff8717f82ddd53ff2",
+      "packages": 71,
+      "passed": true
+    },
+    {
+      "path": "deploy/speech-requirements.lock.txt",
+      "sha256": "94d3891866b3874d19ab93b557f42541e8273ff7eaeed7fcafc0d9f1110d07d9",
+      "packages": 189,
+      "passed": true
+    },
+    {
+      "path": "deploy/tryon-requirements.lock.txt",
+      "sha256": "7e081e406acad03733be245c08f30da9bc24ff5bd120c1bf5b9803aa2b65305d",
+      "packages": 118,
+      "passed": true
+    },
+    {
+      "path": "deploy/vlm-requirements.lock.txt",
+      "sha256": "09997f3ddac32a4b5672cf372d8f392b5ef4456ebe471cf0d1dd9b173bb2c91e",
+      "packages": 198,
+      "passed": true
+    }
+  ],
+  "containers": {
+    "vlm": {
+      "report_sha256": "4b7be9128869e58ac47558745523c611f33258a096d076f9611667055f6e6a90",
+      "findings": 0,
+      "covered_package_types": [
+        "python-pkg",
+        "wolfi"
+      ],
+      "all_severities": true,
+      "unfixed_findings_included": true
+    },
+    "https_proxy": {
+      "report_sha256": "c2002734fbf91ab87f5243cd00ed095863b9dc83e59b6f40c7ccfe7f2734346a",
+      "findings": 0,
+      "covered_package_types": [
+        "gobinary"
+      ],
+      "all_severities": true,
+      "unfixed_findings_included": true
+    }
+  },
+  "runtime": {
+    "report_sha256": "9e0263b3b5ef91ed5592e2267b644ac49bb3f50f9567da35cb16365e66231a09",
+    "fresh_model_recipe_built": true,
+    "compiler_cache_reused": true,
+    "model_image": "sha256:9790e45f1cad0df81f89ac7fbf12037be57fc85130bc7f7fc113ca0243a17c4e",
+    "model_recipe_sha256": "ebb50453cd5256179627927756675b150637b0983fc9a711bc75bb4603cb1788",
+    "model_startup_seconds": 831.35,
+    "shopping_turns": 9,
+    "shopping_checks": {
+      "preview_requires_authentication": true,
+      "unavailable_items_never_previewed": true,
+      "unavailable_items_never_added": true,
+      "yellow_medium_stock_reported": true,
+      "misunderstanding_acknowledged": true,
+      "switched_to_drizzle": true,
+      "generated_on_gpu": true,
+      "correct_selected_variant": true,
+      "add_after_preview_does_not_generate_again": true,
+      "cart_retains_previewed_variant": true,
+      "cart_quantity_one": true
+    },
+    "latency_turns": 25,
+    "all_turns_complete_with_audio": true,
+    "latency_location": "GPU host loopback; excludes browser and WAN latency",
+    "latency": {
+      "greeting": {
+        "samples": 5,
+        "median_audio_ms": 916.6,
+        "min_audio_ms": 825.3,
+        "max_audio_ms": 944.8
+      },
+      "search": {
+        "samples": 5,
+        "median_audio_ms": 2625.0,
+        "min_audio_ms": 2608.8,
+        "max_audio_ms": 2737.1
+      },
+      "second_one": {
+        "samples": 5,
+        "median_audio_ms": 1003.3,
+        "min_audio_ms": 946.7,
+        "max_audio_ms": 1061.5
+      },
+      "stock": {
+        "samples": 5,
+        "median_audio_ms": 2044.5,
+        "min_audio_ms": 1962.0,
+        "max_audio_ms": 2060.9
+      },
+      "voice": {
+        "samples": 5,
+        "median_audio_ms": 1696.7,
+        "min_audio_ms": 1654.3,
+        "max_audio_ms": 4098.1
+      }
+    },
+    "baseline_services_restored": true
+  },
+  "host": {
+    "os": "Ubuntu 24.04",
+    "installed_packages_detected": 932,
+    "advisory_status": "Unresolved. Applicability and available remediation require review.",
+    "installation_gate": "Rejected the detected host findings in an actual exported-source run.",
+    "raw_match_counts_are_not_distinct_exploitable_vulnerabilities": true
+  },
+  "protected_resources": {
+    "existing_firewalls_checked": 32,
+    "unchanged": true,
+    "additional_cloud_resources_created_this_review": 0
+  },
+  "not_verified": [
+    "A fresh site.py apply infrastructure run",
+    "Host advisory applicability and remediation",
+    "Browser and San Francisco WAN latency with the upgraded runtime",
+    "Human listening and concurrent peak-memory behavior",
+    "Public HTTPS certificate issuance and renewal"
+  ]
+}

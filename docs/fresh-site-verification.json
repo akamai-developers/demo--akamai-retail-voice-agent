@@ -1,0 +1,503 @@
+{
+  "created_utc": "2026-11-07T02:06:16.452779+00:00",
+  "release_ready": true,
+  "scope": "Restricted single-site developer demonstration; not production security clearance",
+  "region": "nl-ams",
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 97887 MiB, 620.70.06",
+  "ubuntu": "24.04",
+  "kernel": "7.0.0-42-generic",
+  "source": {
+    "base_commit": "30f0d3a705adb81d5ca4af6b3c12d43a8d2f2220",
+    "uncommitted_candidate": true,
+    "core_files_verified_against_deployment": 131,
+    "core_manifest_sha256": "cbc6a5ee30a096947b1399936c06ce83c4b8652dae0cc7716bddf3fb009334a7"
+  },
+  "provisioning": {
+    "new_instances": 1,
+    "new_firewalls": 1,
+    "models_downloaded_on_new_host": true,
+    "gpu_environments_built_on_new_host": true,
+    "full_install_completed": true,
+    "resume_succeeded_without_duplicates": true,
+    "unchanged_image_reused_and_rescanned": true,
+    "first_model_compile_about_minutes": 15,
+    "fixes_verified": [
+      "hashed package installer upgrade",
+      "shell invocation of readiness script",
+      "wait for all services",
+      "immutable image reuse on resume",
+      "proxy configuration readable under restricted container user"
+    ]
+  },
+  "reference": {
+    "fictional": true,
+    "source_photographs": false,
+    "sha256": "0a0cf54909efc9cf01b42f1975dc3d7612e88695bf28e5c75a9ae95322441220",
+    "generated_preview_visually_inspected": true
+  },
+  "local_checks": {
+    "python_tests": 298,
+    "format_lint_types_javascript": "passed",
+    "fresh_export_setup_and_package_assets": "passed"
+  },
+  "shopping": {
+    "turns": 9,
+    "checks": {
+      "unauthenticated_catalog_rejected": true,
+      "retailer_catalogs_disjoint": true,
+      "preview_requires_authentication": true,
+      "unavailable_items_never_previewed": true,
+      "unavailable_items_never_added": true,
+      "yellow_medium_stock_reported": true,
+      "misunderstanding_acknowledged": true,
+      "switched_to_drizzle": true,
+      "generated_on_gpu": true,
+      "correct_selected_variant": true,
+      "add_after_preview_does_not_generate_again": true,
+      "cart_retains_previewed_variant": true,
+      "cart_quantity_one": true
+    }
+  },
+  "browser": {
+    "checks": [
+      "how it works reads before sign-in: diagram, details, keyboard tabs",
+      "storefront cards match /v1/catalog",
+      "lost message response retried with the same key",
+      "text message updates cards, transcript and playback source",
+      "browser timings: ordered marks, read-only window.__timings",
+      "four viewports without horizontal scroll, screenshots saved",
+      "follow-up resolves the second card",
+      "focus panel opens, shows the large photo, Back and Escape close it",
+      "add to cart shows the committed cart",
+      "how it works marks the observed stages and lists their timings",
+      "small talk answers without the catalog and keeps the cards",
+      "foreign product id never reaches the screen",
+      "keyboard focus outline and reduced motion",
+      "fake microphone recording stops on silence and submits",
+      "meter and state line follow the turn; microphone reopens after it",
+      "end conversation closes the microphone and keeps the storefront",
+      "sign-out clears keys, cards, transcript and events; no browser storage",
+      "retailer B storefront and conversation",
+      "no page errors or external requests"
+    ],
+    "measured": {
+      "typed_search_request_to_playback_ms": 367,
+      "typed_search_reply_audio_bytes": 313388,
+      "fake_mic_peak_meter_percent": 88,
+      "start_to_automatic_stop_ms": 3447,
+      "voice_recorded_audio_ms": 3457,
+      "voice_trailing_quiet_ms": 801,
+      "voice_capture_end_to_playback_ms": 1248
+    },
+    "preview_cart": {
+      "passed": true,
+      "preview_visible": true,
+      "fictional_person": true,
+      "previewed_variant_added_once": true,
+      "viewports": 4,
+      "page_errors": []
+    },
+    "screenshots_visually_inspected": [
+      "1920x1080",
+      "1512x982",
+      "1366x1024",
+      "390x844"
+    ]
+  },
+  "latency": {
+    "method": "Request submission until complete reply audio arrives, after warmup. Excludes speaking, silence detection and playback.",
+    "gpu_loopback": {
+      "greeting": {
+        "samples": 5,
+        "median_audio_ms": 913.7,
+        "min_audio_ms": 877.5,
+        "max_audio_ms": 962.4
+      },
+      "search": {
+        "samples": 5,
+        "median_audio_ms": 2675.3,
+        "min_audio_ms": 1353.5,
+        "max_audio_ms": 2769.1
+      },
+      "second_one": {
+        "samples": 5,
+        "median_audio_ms": 973.4,
+        "min_audio_ms": 919.2,
+        "max_audio_ms": 1015.9
+      },
+      "stock": {
+        "samples": 5,
+        "median_audio_ms": 1985.9,
+        "min_audio_ms": 1807.3,
+        "max_audio_ms": 2034.2
+      },
+      "voice": {
+        "samples": 5,
+        "median_audio_ms": 1432.3,
+        "min_audio_ms": 1387.0,
+        "max_audio_ms": 1508.3
+      }
+    },
+    "workstation_through_ssh": {
+      "greeting": {
+        "trials": 5,
+        "complete": 5,
+        "failed": 0,
+        "wall_first_event_ms": 223.6,
+        "wall_turn_end_ms": 1040.6,
+        "wall_result_ms": 1132.5,
+        "wall_audio_ms": 1132.5,
+        "gateway_total_ms": 944.6,
+        "asr_ms": null,
+        "model_ms": 125.4,
+        "tts_ms": 817.1,
+        "reply_audio_bytes": 114732,
+        "reply_words": 8
+      },
+      "search": {
+        "trials": 5,
+        "complete": 5,
+        "failed": 0,
+        "wall_first_event_ms": 267.2,
+        "wall_turn_end_ms": 2804.7,
+        "wall_result_ms": 3170.5,
+        "wall_audio_ms": 3170.5,
+        "gateway_total_ms": 2618.0,
+        "asr_ms": null,
+        "model_ms": 558.9,
+        "tts_ms": 2055.6,
+        "reply_audio_bytes": 311340,
+        "reply_words": 20
+      },
+      "second_one": {
+        "trials": 5,
+        "complete": 5,
+        "failed": 0,
+        "wall_first_event_ms": 188.1,
+        "wall_turn_end_ms": 1137.7,
+        "wall_result_ms": 1319.9,
+        "wall_audio_ms": 1319.9,
+        "gateway_total_ms": 951.0,
+        "asr_ms": null,
+        "model_ms": 0,
+        "tts_ms": 946.7,
+        "reply_audio_bytes": 135212,
+        "reply_words": 8
+      },
+      "stock": {
+        "trials": 5,
+        "complete": 5,
+        "failed": 0,
+        "wall_first_event_ms": 267.2,
+        "wall_turn_end_ms": 2104.1,
+        "wall_result_ms": 2469.1,
+        "wall_audio_ms": 2469.1,
+        "gateway_total_ms": 1966.5,
+        "asr_ms": null,
+        "model_ms": 467.4,
+        "tts_ms": 1495.8,
+        "reply_audio_bytes": 219180,
+        "reply_words": 12
+      },
+      "voice": {
+        "trials": 5,
+        "complete": 5,
+        "failed": 0,
+        "wall_first_event_ms": 312.9,
+        "wall_turn_end_ms": 1760.1,
+        "wall_result_ms": 1943.7,
+        "wall_audio_ms": 1943.7,
+        "gateway_total_ms": 1481.6,
+        "asr_ms": 32.9,
+        "model_ms": 147.1,
+        "tts_ms": 1296.3,
+        "reply_audio_bytes": 188460,
+        "reply_words": 11
+      }
+    },
+    "samples_per_step_per_location": 5,
+    "successful_measured_turns": 50,
+    "san_francisco_measured": false,
+    "first_live_preview_generation_ms": 17736.6,
+    "first_live_preview_request_to_audio_ms": 19528.0,
+    "preview_cache_hit": false
+  },
+  "speech_read_back": {
+    "samples": 8,
+    "minimum_word_recall": 0.95,
+    "sentence_content_retained": true,
+    "human_listening_performed": false
+  },
+  "reboot": {
+    "created_utc": "2026-11-07T01:57:44.248297+00:00",
+    "new_boot_id_verified": true,
+    "service_states": [
+      "active",
+      "active",
+      "active",
+      "active"
+    ],
+    "reboot_to_ready_seconds": 218.341,
+    "manual_service_start": false,
+    "successful_post_reboot_turns": 7,
+    "preview_and_cart_passed": true
+  },
+  "dependency_locks": [
+    {
+      "path": "deploy/installer-requirements.lock.txt",
+      "sha256": "06c41521fd23e0fc2a2ce8d9cf432ea313a7df0921551c94484ae9d7785c427f",
+      "packages": 1,
+      "passed": true
+    },
+    {
+      "path": "requirements.lock.txt",
+      "sha256": "6e55d6c638631a255eff830f98a7b679fe47323828e706aff8717f82ddd53ff2",
+      "packages": 71,
+      "passed": true
+    },
+    {
+      "path": "deploy/speech-requirements.lock.txt",
+      "sha256": "94d3891866b3874d19ab93b557f42541e8273ff7eaeed7fcafc0d9f1110d07d9",
+      "packages": 189,
+      "passed": true
+    },
+    {
+      "path": "deploy/tryon-requirements.lock.txt",
+      "sha256": "7e081e406acad03733be245c08f30da9bc24ff5bd120c1bf5b9803aa2b65305d",
+      "packages": 118,
+      "passed": true
+    },
+    {
+      "path": "deploy/vlm-requirements.lock.txt",
+      "sha256": "09997f3ddac32a4b5672cf372d8f392b5ef4456ebe471cf0d1dd9b173bb2c91e",
+      "packages": 198,
+      "passed": true
+    }
+  ],
+  "installed_package_audits": [
+    {
+      "environment": "gateway",
+      "packages": 84,
+      "omitted_source_packages": [
+        {
+          "name": "retail-voice-reference",
+          "version": "0.5.0",
+          "scope": "Repository or pinned source, reviewed separately"
+        }
+      ],
+      "passed": true,
+      "affected": []
+    },
+    {
+      "environment": "speech",
+      "packages": 190,
+      "omitted_source_packages": [
+        {
+          "name": "nemo-toolkit",
+          "version": "3.1.0+218d0b443",
+          "scope": "Repository or pinned source, reviewed separately"
+        }
+      ],
+      "passed": true,
+      "affected": []
+    },
+    {
+      "environment": "tryon",
+      "packages": 119,
+      "omitted_source_packages": [],
+      "passed": true,
+      "affected": []
+    }
+  ],
+  "container_scans": {
+    "vlm": {
+      "receipt": {
+        "image": "sha256:7901deda3b062a9a39935fc6cae2f89fe3cd9a9ef17a051861f74ad2b0ab850b",
+        "recipe_sha256": "ebb50453cd5256179627927756675b150637b0983fc9a711bc75bb4603cb1788",
+        "created_utc": "2026-11-07T00:59:16.162063+00:00",
+        "vulnerability_scan": "passed"
+      },
+      "coverage": [
+        "python-pkg",
+        "wolfi"
+      ],
+      "vulnerability_count": 0,
+      "scan_sha256": "daff2ecb749291b9de1ddb152540add1e1cdb71f81cbaebe5d44e4793d8de91a"
+    },
+    "caddy": {
+      "receipt": {
+        "image": "sha256:291bc43508d51f40c0747122628db5d18d519bc9faa901286e5c17ea0011fe41",
+        "recipe_sha256": "e53b32f17f6bbae8315ba2092f0821ae00226414306a70afcbfd4746e68c17ad",
+        "created_utc": "2026-11-06T23:36:31.591877+00:00",
+        "vulnerability_scan": "passed"
+      },
+      "coverage": [
+        "gobinary"
+      ],
+      "vulnerability_count": 0,
+      "scan_sha256": "35c6be0d42d2eaac8e2f6b3fa6c9ebbdac2230cff1f4aa2c9809d8e02e7e4447"
+    }
+  },
+  "host_assessment": {
+    "created_utc": "2026-11-06T23:44:03.610702+00:00",
+    "running_kernel": "7.0.0-42-generic",
+    "all_installed": {
+      "package_matches": 28357,
+      "unique_advisories": 3548,
+      "unique_by_severity": {
+        "MEDIUM": 2400,
+        "LOW": 748,
+        "CRITICAL": 15,
+        "HIGH": 385
+      },
+      "matches_with_fixed_version": 0
+    },
+    "active_kernel_packages": {
+      "package_matches": 613,
+      "unique_advisories": 613,
+      "unique_by_severity": {
+        "CRITICAL": 4,
+        "HIGH": 59,
+        "MEDIUM": 401,
+        "LOW": 149
+      },
+      "matches_with_fixed_version": 0
+    },
+    "other_installed_packages": {
+      "package_matches": 27744,
+      "unique_advisories": 3548,
+      "unique_by_severity": {
+        "MEDIUM": 2400,
+        "LOW": 748,
+        "CRITICAL": 15,
+        "HIGH": 385
+      },
+      "matches_with_fixed_version": 0
+    },
+    "active_kernel_high_critical": [
+      "CVE-2014-4323",
+      "CVE-2022-50240",
+      "CVE-2025-40190",
+      "CVE-2026-68103",
+      "CVE-2026-72198",
+      "CVE-2026-72497",
+      "CVE-2026-74578",
+      "CVE-2026-89805",
+      "CVE-2026-89907",
+      "CVE-2026-90155",
+      "CVE-2026-90162",
+      "CVE-2026-90167",
+      "CVE-2026-90317",
+      "CVE-2026-93175",
+      "CVE-2026-98376",
+      "CVE-2026-98420",
+      "CVE-2026-98432",
+      "CVE-2026-98689",
+      "CVE-2026-98699",
+      "CVE-2026-98701",
+      "CVE-2026-98702",
+      "CVE-2026-98704",
+      "CVE-2026-98706",
+      "CVE-2026-98707",
+      "CVE-2026-98708",
+      "CVE-2026-98709",
+      "CVE-2026-98712",
+      "CVE-2026-98719",
+      "CVE-2026-98725",
+      "CVE-2026-98730",
+      "CVE-2026-98733",
+      "CVE-2026-98734",
+      "CVE-2026-98735",
+      "CVE-2026-98737",
+      "CVE-2026-98738",
+      "CVE-2026-98739",
+      "CVE-2026-98741",
+      "CVE-2026-98742",
+      "CVE-2026-98752",
+      "CVE-2026-98754",
+      "CVE-2026-98763",
+      "CVE-2026-98776",
+      "CVE-2026-98788",
+      "CVE-2026-98792",
+      "CVE-2026-98794",
+      "CVE-2026-98797",
+      "CVE-2026-98799",
+      "CVE-2026-98800",
+      "CVE-2026-98803",
+      "CVE-2026-98804",
+      "CVE-2026-98805",
+      "CVE-2026-98813",
+      "CVE-2026-98823",
+      "CVE-2026-98824",
+      "CVE-2026-98827",
+      "CVE-2026-98829",
+      "CVE-2026-98836",
+      "CVE-2026-98837",
+      "CVE-2026-98846",
+      "CVE-2026-98858",
+      "CVE-2026-98861",
+      "CVE-2026-98862",
+      "CVE-2026-98863"
+    ],
+    "interpretation": "Package matches require applicability review. Other installed packages include fallback kernels, headers, tools, and user-space libraries. No findings are suppressed.",
+    "report_sha256": "4b5c24fe88f04f85a69b50f6a7e863ab40c43672570276cec424d3bbd7ca44b5",
+    "scanner_exit": 1,
+    "unfixed_advisories_accepted_for_demo": true
+  },
+  "pending_package_updates": 0,
+  "network": {
+    "workstation_tcp_connections": {
+      "22": true,
+      "80": false,
+      "443": false,
+      "8081": false,
+      "8082": false,
+      "8083": false,
+      "8765": false
+    },
+    "existing_instances_unchanged": 11,
+    "existing_firewalls_unchanged": 33,
+    "new_instance_count": 1,
+    "new_firewall_attached_only_to_new_instance": true,
+    "allowed_tcp_ports": [
+      22,
+      80,
+      443
+    ],
+    "allowed_source_count": 2,
+    "inbound_default": "DROP",
+    "ssh_denied_from_non_allowlisted_test_host": true,
+    "home_source_not_directly_tested": true,
+    "public_https_deployed": false
+  },
+  "proxy_config_validation": {
+    "passed": true,
+    "image": "sha256:291bc43508d51f40c0747122628db5d18d519bc9faa901286e5c17ea0011fe41",
+    "network_disabled": true,
+    "ports_published": false,
+    "real_certificate_issuance_tested": false
+  },
+  "limitations": [
+    "Unfixed Ubuntu advisories accepted explicitly for restricted demo use; active kernel matches include 4 critical and 59 high.",
+    "Ubuntu 26.04, smaller GPUs, San Francisco latency, concurrent load and human voice listening were not verified.",
+    "Trusted public TLS certificate issuance was not tested. The complete tested browser path uses SSH to localhost."
+  ],
+  "pushed": false,
+  "private_evidence_sha256": {
+    "fresh-runtime.json": "00a71c67643454e0d55f22c232d9d01b32a74b5babb8db93443703940c03c0e2",
+    "browser.log": "6dee90b17c4a8667238e13bcb4b3c2b0a4f00f5e856db0d2d2c6e11a59d42c65",
+    "browser-receipt.json": "40582d4c2887304d50ea0b809fff8dea65114712a7c232fc020ab8e31fc2c38c",
+    "workstation-latency.json": "ce581f46e49c54bef5139cf322bd50d9d5c29ca561ce47dc05b52ed4b11d2d5d",
+    "reboot.json": "f36d0f97fcfa179b9bfa1fdeac6d7af683749171b4b1a7d5e333b3254b5a2d07",
+    "after-reboot.json": "7fd20182493a6c9022373bb1d36e74e4d1a99251a9a1931cadb7c17267171926",
+    "collected.json": "d611a2dad61b560307c82d8ef714f54e06e49ffc741b3e91948d153928a94f4d",
+    "host-assessment.json": "8a96dd72b1cc71fa4c6cb15633feb7c5ef9485323b674692a23f7eab0419a749",
+    "installed-audits.json": "dc59235c564c8070f3aaf633b2ad4e32f7b111dd25a7f62010a45b0c68c6c4d0",
+    "dependencies.json": "3c8dd5d7e0f3ebfe4f8d53cce4db16031948ff3f88bdf75cbcb55cd4c594fe1d",
+    "speech-content.json": "b2835a85ddb00597ba2f509c1ae18a8f2b163b3dabcb381a45bba37200512c0f",
+    "proxy-validation.json": "eb908c84f31982649649810fcc6969029fb8632b8aba28900bb04cb1f75a1f1a",
+    "clean-clone.json": "b62f736cf07dbd0cbdb441cd752dfbed0644508558237249219359a63af9006f",
+    "apply.log": "bb72ea109a01e6d418b57325ccda3112f11e35b31db1b2287944ca8d98b0ca26",
+    "network.json": "175b94fe3277b53b1c28badf0d160f107c67d65f3241bc3dc4b2067a1ab434e6"
+  }
+}

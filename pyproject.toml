@@ -19,7 +19,7 @@ test = ["httpx==0.28.1", "ruff==0.11.9", "jsonschema==4.23.0", "playwright==1.51
 where = ["src"]
 
 [tool.setuptools.package-data]
-retail_voice = ["web/*", "web/brand/*", "web/fonts/*", "profiles/*.json", "data/*.json", "data/products/*.jpg"]
+retail_voice = ["web/*", "web/brand/*", "web/fonts/*", "profiles/*.json", "data/*.json", "data/products/*.jpg", "data/demo/*.png", "data/demo/*.json"]
 
 [tool.ruff]
 line-length = 100

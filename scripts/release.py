@@ -8,9 +8,12 @@ import zipfile
 from pathlib import Path
 
 from public_check import ROOT, check
+from security import require_release_clearance
 
 
 def export(destination, publish=False):
+    if publish:
+        require_release_clearance()
     paths = check(publish=publish)
     destination = Path(destination).resolve()
     destination.parent.mkdir(parents=True, exist_ok=True)

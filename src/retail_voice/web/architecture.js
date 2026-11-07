@@ -25,7 +25,7 @@ export const DETAILS = {
     route: "POST /v1/sessions · POST /v1/sessions/{id}/messages",
     storage: "The session lives in gateway memory until End, sign-out, 5 idle minutes or a restart. A retry with the same Idempotency-Key returns the same turn instead of running it again.",
     term: "Admission queue: the gate in front of the one GPU, so a second shopper's turn waits instead of competing.",
-    note: "Caddy on 443 stands in front of this gateway: a Let's Encrypt certificate, per-address rate limits and a firewall that admits listed addresses only.",
+    note: "Connect through an SSH tunnel, or configure Caddy on 443 with a trusted certificate. The firewall admits listed addresses only.",
   },
   orchestrator: {
     step: 3, where: "CPU", title: "Pipecat orchestration and session memory",

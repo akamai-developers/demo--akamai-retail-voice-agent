@@ -1,0 +1,556 @@
+{
+  "created_utc": "2026-11-06T21:45:02.952155+00:00",
+  "running_kernel": "7.0.0-42-generic",
+  "os": {
+    "Family": "ubuntu",
+    "Name": "24.04"
+  },
+  "scanner_exit": 1,
+  "report_sha256": "d36c271fe5988be34d0b729377263719cc6849d4858d2e2ff5de41749749fdd3",
+  "all_installed": {
+    "package_matches": 29574,
+    "unique_advisories": 3546,
+    "unique_by_severity": {
+      "MEDIUM": 2398,
+      "LOW": 748,
+      "CRITICAL": 15,
+      "HIGH": 385
+    },
+    "matches_with_fixed_version": 0
+  },
+  "running_kernel_modules": {
+    "package_matches": 612,
+    "unique_advisories": 612,
+    "unique_by_severity": {
+      "CRITICAL": 4,
+      "HIGH": 59,
+      "MEDIUM": 400,
+      "LOW": 149
+    },
+    "matches_with_fixed_version": 0
+  },
+  "hwe_kernel_packages": {
+    "package_matches": 3060,
+    "unique_advisories": 612,
+    "unique_by_severity": {
+      "CRITICAL": 4,
+      "HIGH": 59,
+      "MEDIUM": 400,
+      "LOW": 149
+    },
+    "matches_with_fixed_version": 0
+  },
+  "non_kernel_packages": {
+    "package_matches": 843,
+    "unique_advisories": 184,
+    "unique_by_severity": {
+      "MEDIUM": 151,
+      "LOW": 33
+    },
+    "matches_with_fixed_version": 0
+  },
+  "hwe_high_critical": [
+    {
+      "VulnerabilityID": "CVE-2026-90162",
+      "Severity": "CRITICAL",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ksmbd: defer publishing granted locks to prevent UAF/double-free race"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98432",
+      "Severity": "CRITICAL",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ipv4: free inet_opt and ireq_opt after an RCU grace period"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98725",
+      "Severity": "CRITICAL",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: nvmet-auth: fix out-of-bounds write in nvmet_auth_challenge()"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98805",
+      "Severity": "CRITICAL",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: tipc: prevent GCM nonce reuse on peer key changes"
+    },
+    {
+      "VulnerabilityID": "CVE-2014-4323",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": null
+    },
+    {
+      "VulnerabilityID": "CVE-2022-50240",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: binder: fix UAF of alloc->vma in race with munmap()"
+    },
+    {
+      "VulnerabilityID": "CVE-2025-40190",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ext4: guard against EA inode refcount underflow in xattr update"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-68103",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: drm/amdgpu: reject mapping a reserved doorbell to a new queue"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-72198",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ntfs: reject non-resident records for resident-only attributes"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-72497",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: RDMA/bnxt_re: Add a max slot check for SQ"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-74578",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: crypto: algif_skcipher - force synchronous processing on trees without ctx->state"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-89805",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: drm/pagemap: Fix folio allocation fallback and use-after-put"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-89907",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: LoongArch: KVM: Validate MSI data before routing it to EIOINTC"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-90155",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ksmbd: detach blocked lock requests before freeing"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-90167",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ksmbd: serialize oplock close with pending break ownership"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-90317",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: bpf: Invalidate RCU pointers after final spin unlock"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-93175",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: drm/amd/display: Fix dangling pointer in CRTC reset function"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98376",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: bpf: Use array_map_meta_equal for percpu array inner map replacement"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98420",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ksmbd: follow SMB2 session expiration semantics"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98689",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: thunderbolt: Don't access a DP tunnel after its DPRX read was canceled"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98699",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: wifi: mac80211: fix mesh fast xmit path deletion UAF"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98701",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: wifi: mac80211: release mesh path quota on failed additions"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98702",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: Denial of Service via invalid channel switch frame in mac80211"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98704",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: wifi: mac80211: keep fallback association elements alive"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98706",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: wifi: mac80211: drain PS delivery work during station teardown"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98707",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: wifi: mac80211: shut down RX BA session timer on teardown"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98708",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: mac80211: Denial of Service via use-after-free in channel context replacement"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98709",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: mac80211: Denial of Service via use-after-free during channel switching"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98712",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: KVM: arm64: vgic: Take a refcount on IRQs referenced by last_lr_irq"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98719",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: KVM: SEV: Nullify \"have run CPUs\" mask pointer when freeing it"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98730",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: Bluetooth: btintel_pcie: reject oversized TX packets in send_frame()"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98733",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: Denial of Service via use-after-free in Bluetooth ISO packet queueing"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98734",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: Denial of Service via use-after-free in Bluetooth connection scheduling"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98735",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: Bluetooth: hci_core: Serialize ACL scheduling with channel deletion"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98737",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: Denial of service via Bluetooth inquiry cache use-after-free"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98738",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: denial of service via race condition in Bluetooth SMP remote OOB handling"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98739",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: Bluetooth: RFCOMM: Fix initial port reference race"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98741",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ALSA: ua101: reject mismatched capture/playback packet sizes"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98742",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: Use-after-free via race condition in ALSA sequencer compatibility ioctls"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98752",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: tty: port: fix tty_port_tty_vhangup() race"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98754",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: tty: vcc: hold port lock when clearing tty pointer in vcc_cleanup"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98763",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: usb: core: clear both ep_in and ep_out for non-ep0 control endpoints"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98776",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: Privilege escalation via binderfs use-after-free"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98788",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: Privilege escalation via use-after-free during futex hash resizing"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98792",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: netfilter: flowtable: generalize pending status bit"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98794",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ipvs: filter some flags received in the backup server"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98797",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: net: cap skb->queue_mapping when the tx queue is picked"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98799",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: bpf: Skip detached progs in trampoline images that are still in use"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98800",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: Denial of Service via use-after-free in BPF trampoline"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98803",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: net: stmmac: fix rx Scatter-Gather support"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98804",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: net: page_pool: fix use-after-free in page_pool_recycle_ring_bulk()"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98813",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: bpf: Hold map BTF for the memory allocator destructor record"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98823",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: wifi: cfg80211: preserve hidden-group beacon IE ownership"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98824",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: wifi: mac80211: validate TX status rate metadata"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98827",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: wifi: ath9k_htc: bound TX aggregation to MAX_TX_BUF_SIZE"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98829",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: wifi: mac80211: drop oversized fragments to avoid extra_len overflow"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98836",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ALSA: line6: reject oversized playback packets"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98837",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: ALSA: caiaq: unregister the input device when probe fails"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98846",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: sctp: check RCV_SHUTDOWN after the sendmsg connect wait"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98858",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: io_uring: fix task_work add use-after-free with SQPOLL"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98861",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: kernel: Denial of Service via fprobe use-after-free"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98862",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: audit: fix exe mark UAF in kill_rules()"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-98863",
+      "Severity": "HIGH",
+      "InstalledVersion": "7.0.0-42.42~24.04.1",
+      "FixedVersion": null,
+      "Title": "kernel: KVM: x86: Re-pend GET_NESTED_STATE_PAGES if getting said pages fails"
+    }
+  ],
+  "before_kernel": "6.8.0-147-generic",
+  "before_active_kernel_advisories": 3208,
+  "before_active_kernel_critical": 15,
+  "before_active_kernel_high": 370,
+  "removed_kernel_series": [
+    "6.8.0-134",
+    "6.8.0-147"
+  ],
+  "fallback_kernel": "6.8.0-149-generic",
+  "pending_apt_upgrades": 0,
+  "runtime": {
+    "created_utc": "2026-11-06T21:53:49.290967+00:00",
+    "kernel": "7.0.0-42-generic",
+    "scope": "Existing isolated AMS runtime after Ubuntu kernel update; not a fresh deployment.",
+    "exit_code": 0,
+    "status": "functional_checks_passed_manual_review_pending",
+    "hard_failures": [],
+    "shopping_failures": [],
+    "service_states": [
+      "active",
+      "active",
+      "active",
+      "active"
+    ],
+    "module_controls": {
+      "ksmbd": {
+        "loaded": false,
+        "autoload_blocked": true
+      },
+      "nvmet": {
+        "loaded": false,
+        "autoload_blocked": true
+      },
+      "tipc": {
+        "loaded": false,
+        "autoload_blocked": true
+      }
+    },
+    "runtime_checks_passed": true,
+    "shopping_checks_passed": true,
+    "turn_count": 23,
+    "queued_turns": 22,
+    "manual_review": "pending: listen to replies, compare spoken facts with cards and stock"
+  },
+  "review_scope": "Package matches are not proof of exploitability. Full applicability review remains incomplete.",
+  "release_cleared": false,
+  "blocking_example": {
+    "id": "CVE-2026-98432",
+    "url": "https://ubuntu.com/security/CVE-2026-98432",
+    "status": "Ubuntu lists the HWE fix as work in progress in 7.0.0-43.43~24.04.1; configured repositories offer 7.0.0-42.",
+    "mitigation": "No firewall changes made. Ubuntu describes its packet-filter mitigation as incomplete."
+  },
+  "existing_cloud_firewalls_checked": 32,
+  "existing_cloud_firewalls_unchanged": true,
+  "repository_checks": {
+    "python_tests_passed": 290,
+    "public_files_checked": 194,
+    "format_lint_types_javascript_passed": true,
+    "bootstrap_exercised_on_fresh_cloud_instance": false
+  },
+  "private_evidence_archive_sha256": "caf030b25bfb64bf6363e4c8e24caf9a69f87387c06dca2b3bbe57c8e1036a04"
+}

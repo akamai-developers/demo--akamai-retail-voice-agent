@@ -1,6 +1,9 @@
 """Run against the installed wheel from outside the source tree."""
 
+import hashlib
+import json
 import os
+from importlib.resources import files
 
 from fastapi.testclient import TestClient
 
@@ -8,6 +11,12 @@ from retail_voice.api import create_app
 from retail_voice.settings import model_manifest
 
 assert model_manifest()["models"]["vlm"]["revision"]
+demo_assets = files("retail_voice").joinpath("data/demo")
+person = demo_assets.joinpath("fictional-person.png").read_bytes()
+provenance = json.loads(demo_assets.joinpath("person-provenance.json").read_text())
+assert person.startswith(b"\x89PNG\r\n\x1a\n")
+assert hashlib.sha256(person).hexdigest() == provenance["sha256"]
+assert provenance["fictional"] is True and provenance["source_images"] == []
 
 os.environ["DEMO_MODE"] = "mock"
 with TestClient(

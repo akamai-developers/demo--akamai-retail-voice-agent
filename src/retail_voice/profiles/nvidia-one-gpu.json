@@ -36,11 +36,9 @@
   "runtime": {
     "pipecat": "1.15.0",
     "nemo_commit": "218d0b443441b7d8aa1c832f47df310f186cf0a4",
-    "vllm_image": "vllm/vllm-openai@sha256:51fdfe717fa0505c177dddc46bd38c22fc1f2156ba14d1b1cd63f78eaa60fd32",
-    "vllm_tag": "v0.20.0-cu129",
-    "caddy_image": "library/caddy@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d",
-    "torch": "2.8.0",
-    "torchaudio": "2.8.0",
-    "cuda_wheels": "cu128"
+    "vllm": "0.33.0",
+    "caddy": "2.11.9",
+    "torch": "2.15.0",
+    "torchaudio": "2.11.1"
   }
 }

@@ -67,6 +67,9 @@ class DeploymentTests(unittest.TestCase):
         if os.getuid() == 0:
             self.command("gpu.py", "services", success=False)
             return
+        (self.root / ".local/caddy-image.json").write_text(
+            json.dumps({"image": "sha256:" + "a" * 64, "vulnerability_scan": "passed"})
+        )
         self.command(
             "gpu.py", "services", "--domain", "demo.example.com", "--email", "admin@example.com"
         )
@@ -76,6 +79,8 @@ class DeploymentTests(unittest.TestCase):
         self.assertIn(str(self.root), gateway)
         self.assertIn("--host 127.0.0.1 --port 8765", gateway)
         self.assertNotIn("TENANT_A_KEY", gateway)
+        self.assertIn("NoNewPrivileges=yes", gateway)
+        self.assertIn("InaccessiblePaths=-/run/docker.sock", gateway)
         self.assertIn("demo.example.com", (self.root / ".local/Caddyfile").read_text())
 
     def test_existing_environment_symlink_is_rejected(self):
@@ -95,6 +100,74 @@ class DeploymentTests(unittest.TestCase):
         result = self.command("gpu.py", "install", success=False)
         self.assertIn("accept-model-licenses", result.stderr)
         self.assertFalse((self.root / ".speech-venv").exists())
+
+    def test_demo_person_configuration_uses_only_the_bundled_fictional_image(self):
+        target = self.root / "src/retail_voice/data/demo"
+        shutil.copytree(ROOT / "src/retail_voice/data/demo", target)
+        self.command("gpu.py", "configure", "--region", "nl-ams", "--demo-person")
+        values = {
+            key: json.loads(value)
+            for key, value in (
+                line.split("=", 1)
+                for line in (self.root / ".local/gateway.env").read_text().splitlines()
+            )
+        }
+        self.assertEqual(values["TRYON_MODE"], "live")
+        self.assertEqual(values["TRYON_REFERENCE_IMAGE"], str(target / "fictional-person.png"))
+        self.assertEqual(values["TRYON_TENANT_ID"], "retailer-a")
+        self.command(
+            "gpu.py",
+            "configure",
+            "--region",
+            "nl-ams",
+            "--demo-person",
+            "--reference",
+            "/private/person.png",
+            success=False,
+        )
+        (target / "fictional-person.png").write_bytes(b"unreviewed replacement")
+        result = self.command(
+            "gpu.py", "configure", "--region", "nl-ams", "--demo-person", success=False
+        )
+        self.assertIn("does not match its provenance", result.stderr)
+
+    def test_reviewed_readme_recording_exports_but_changed_or_other_gifs_fail(self):
+        target = self.root / "docs/media"
+        shutil.copytree(ROOT / "docs/media", target)
+        archive_path = self.root / "review.zip"
+        self.command("release.py", "--output", str(archive_path))
+        import zipfile
+
+        with zipfile.ZipFile(archive_path) as archive:
+            self.assertIn("retail-voice-demo/docs/media/retail-demo.gif", archive.namelist())
+        gif = target / "retail-demo.gif"
+        original = gif.read_bytes()
+        gif.write_bytes(original + b"unreviewed change")
+        result = self.command("public_check.py", success=False)
+        self.assertIn("does not match its provenance", result.stderr)
+        gif.write_bytes(original)
+        (target / "unreviewed.gif").write_bytes(original)
+        result = self.command("public_check.py", success=False)
+        self.assertIn("Unexpected recording", result.stderr)
+
+    def test_export_includes_synthetic_person_and_rejects_other_person_photos(self):
+        target = self.root / "src/retail_voice/data/demo"
+        shutil.copytree(ROOT / "src/retail_voice/data/demo", target)
+        self.command("demo.py", "init")
+        (self.root / ".local/private-person.png").write_bytes(b"private fixture")
+        archive_path = self.root / "review.zip"
+        self.command("release.py", "--output", str(archive_path))
+        import zipfile
+
+        with zipfile.ZipFile(archive_path) as archive:
+            self.assertIn(
+                "retail-voice-demo/src/retail_voice/data/demo/fictional-person.png",
+                archive.namelist(),
+            )
+            self.assertFalse(any("private-person" in name for name in archive.namelist()))
+        (target / "another-person.png").write_bytes(b"unapproved fixture")
+        result = self.command("public_check.py", success=False)
+        self.assertIn("Unexpected person or image asset", result.stderr)
 
     def test_export_excludes_secrets_and_history(self):
         self.command("demo.py", "init")

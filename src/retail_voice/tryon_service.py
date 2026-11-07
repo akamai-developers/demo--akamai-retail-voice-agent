@@ -52,8 +52,9 @@ class ImageRuntime:
                     references.append(image.convert("RGB"))
             prompt = (
                 f"Show the person from image 1 wearing the {name} in {color} from image 2. "
-                "Preserve the person's face, glasses, hair, body proportions, pose, trousers, "
-                "shoes and background. Replace only the upper garment. Match the garment's "
+                "Preserve the person's face, hair, body proportions, pose, trousers, shoes, "
+                "background, and any accessories already visible in image 1. "
+                "Do not introduce new accessories. Replace only the upper garment. Match the garment's "
                 "color, cut, closures and fabric. Photorealistic full-body clothing preview. "
                 "No text, no logos added, no extra people."
             )

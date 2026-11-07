@@ -1,130 +1,104 @@
-# Deploy to a dedicated GPU host
+# Deploy one site
 
-This installs a single-host demo. It does not create a Linode, select a region automatically, or install a GPU driver. Use a newly allocated host or one dedicated to this application. Do not apply these service or firewall commands to an existing deployment.
+Run these commands from the cloned repo on your Mac or Linux computer. The commands create one dedicated GPU and one firewall. They keep the resource IDs, SSH identity, logs, and access key under `.local/sites/SITE_NAME/`.
 
-The pinned GPU dependencies have unresolved security advisories. Read [Validation](validation.md) before installing; the functional hardware run does not clear these dependencies for public release.
+## 1. Set up
 
-## 1. Prepare the host
-
-Use Ubuntu 24.04, Python 3.12, an NVIDIA driver compatible with CUDA 12.9, Docker Engine, and NVIDIA Container Toolkit. Use a non-root account with access to Docker. Docker access grants control over the host; use a dedicated demo host.
-
-The reference hardware has 96 GB VRAM. Reserve space for the VLM, speech models, image model, CUDA environments, and container images. Check available disk space before starting downloads. A 48 GB VLM minimum does not establish that all services fit together.
-
-Install the operating-system build dependencies:
+You need Python 3.12, `make`, `ssh`, `scp`, `ssh-keygen`, `curl`, and a Linode API token with Linodes and Firewalls read/write access. The GPU host is set up automatically.
 
 ```bash
-sudo apt-get update
-sudo apt-get install -y python3.12-venv python3.12-dev build-essential cmake pkg-config git curl libsndfile1 ffmpeg
-nvidia-smi
-docker info
+read -r -s LINODE_TOKEN
+export LINODE_TOKEN
+make env
 ```
 
-Follow the vendor instructions for [Docker on Ubuntu](https://docs.docker.com/engine/install/ubuntu/) and [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html). Verify a CUDA container can see the GPU before continuing.
+Paste your token at the silent prompt. It stays in the shell environment. Do not put it in `.env`.
 
-Clone this repository onto the GPU host. Use a path without spaces. All remaining commands run from that clone as the non-root service account.
+Review `.env`:
 
-## 2. Configure and install
+| Setting | Default | Change it for |
+| --- | --- | --- |
+| `SITE_NAME` | `retail-demo` | A separate deployment |
+| `LINODE_REGION` | `nl-ams` | Another region with capacity |
+| `ADMIN_CIDR` | Empty | Additional administrator addresses |
+| `LOCAL_PORT` | `8766` | A different browser port on your computer |
+
+An empty `ADMIN_CIDR` uses this computer's detected public IPv4 address. For two computers, enter both public IPv4 addresses with `/32`, separated by commas. The list must include the computer running deployment. Both cloud and host firewalls allow TCP 22, 80, and 443 only from that list. Private application and model ports remain closed externally; IPv6 ingress is denied.
+
+## 2. Check capacity and deploy
 
 ```bash
-python3.12 scripts/demo.py setup
-python3.12 scripts/gpu.py configure --site gpu-1 --region YOUR_LINODE_REGION
-python3.12 scripts/gpu.py install --accept-model-licenses
+make gpu-check
+make deploy
 ```
 
-Replace `YOUR_LINODE_REGION` with the host's region ID. Configuration writes `.local/gpu.json` and private environment files, creates unique credentials, and sets a 16,384-token context limit. `--model-dir /absolute/path` stores weights elsewhere. Rerunning configuration preserves keys.
+The capacity table shows current regional prices and availability for the validated 96 GB GPU plan. If Amsterdam has no capacity, choose another available region in `.env`.
 
-Read the model licenses linked in [third-party notices](../THIRD_PARTY_NOTICES.md) before passing the acceptance flag. Installation downloads the exact model revisions in `src/retail_voice/profiles/nvidia-one-gpu.json`, creates a separate speech environment, and records its resolved dependencies in `.local/speech-resolved.txt`. It does not start services. The NeMo environment has direct pins, not a complete portable lock; retain and audit the resolved file for each host.
+Deployment shows the selected site, hourly price, and allowed addresses. Type `deploy` to proceed. This also accepts the model licenses in [Third-party notices](../THIRD_PARTY_NOTICES.md) and the restricted-demo host exception in [Security](../SECURITY.md). Available host fixes, missing scan coverage, and dependency or container findings still stop installation.
 
-For try-on, provide your own permitted reference photo before installation:
+The command creates a private SSH key, provisions the firewall and GPU, installs Ubuntu updates and the driver, reboots, downloads the models, builds scanned images, and starts the services. It waits for readiness and warms speech and reasoning with a synthetic request. Try-on uses the bundled fictional person.
+
+Plan for **45-90 minutes for a first deployment**. [Unverified: Hardware Run Pending] This total is a planning estimate, not an end-to-end measurement. Download speed, builds, and security scans can extend it. First compilation alone took about 15 minutes in the recorded hardware run. Resuming skips completed steps, so the initial estimate does not apply to a resume.
+
+The terminal shows the GPU's public IPv4 as soon as it is assigned, each installation stage, and elapsed time every 30 seconds. When warmup succeeds, the summary shows the actual duration for that invocation, browser URL, and app API-key location. Detailed output stays in `.local/sites/SITE_NAME/deploy.log`. Measured duration is saved in `.local/sites/SITE_NAME/deployment-timing.json`; it excludes confirmation time and previous attempts.
+
+An interrupted run resumes with the same command and settings; it does not create another GPU. Use `make status` at any time to see saved connection details and the last successful duration. It reads local files without contacting the GPU or requiring a token, so use `make cloud-check` for live readiness.
+
+## 3. Open the app
 
 ```bash
-python3.12 scripts/gpu.py configure --site gpu-1 --region YOUR_LINODE_REGION \
-  --reference /absolute/private/path/person.jpg --tenant retailer-a
-python3.12 scripts/gpu.py install --accept-model-licenses
+make tunnel
 ```
 
-Use a JPEG or PNG photo under 2 MB and 4 megapixels. Convert WebP or other formats before configuration. It stays on the host and is used only for the configured retailer. The repository includes no person photo. Try-on is a generated appearance preview, not a size or fit prediction. The app checks stock before generating a preview and retains the selected variant when adding it to the cart.
+Run the tunnel from the same computer and clone used for deployment, where the private SSH state is saved. Leave this terminal open. The cloud browser address is <http://localhost:8766>. The local mock uses port 8765, so it can remain running.
 
-The download includes pinned tokenizer files needed by the speech checkpoint. On its first start, the speech worker derives a private inference codec without training-only components. The pinned source checkpoint stays unchanged. The derived checkpoint and its hash receipt live in `.local/runtime/` and are verified before reuse. Model serving remains offline after installation.
-
-## 3. Start services
+In a second terminal in the same clone:
 
 ```bash
-python3.12 scripts/gpu.py services
+make key
 ```
 
-Review `.local/systemd/`. Units contain your account and clone paths, not credential values. Install the three core services:
+On a Mac, the app API key is copied to your clipboard. On Linux, `make key` displays the key in this terminal. Paste it into the app's sign-in form. It is saved in `.local/sites/SITE_NAME/shopper-key.txt` with owner-only permissions. This is the cloud app key, separate from your `LINODE_TOKEN` and the local mock key in `.local/gateway.env`. Deployment logs and `make status` show the key's location, never its value.
+
+No domain or certificate is needed for this SSH connection. A domain needs a certificate trusted by the browser for direct HTTPS. The microphone does not work over ordinary HTTP at the server IP. [Advanced deployment](deploy-advanced.md#browser-access-and-tls) covers trusted certificates without broadening the firewall.
+
+## 4. Verify
 
 ```bash
-sudo install -m 644 .local/systemd/retail-vlm.service .local/systemd/retail-speech.service .local/systemd/retail-gateway.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now retail-vlm retail-speech retail-gateway
-journalctl -u retail-gateway -f
+make cloud-check
+make smoke
 ```
 
-If configured, install the image worker too:
+These commands use SSH directly; they do not depend on the browser tunnel. `cloud-check` checks pinned models, GPU visibility, worker readiness, authentication, and separate retailer catalogs. `smoke` uses a synthetic spoken request, generates a live preview, adds the previewed navy medium once, and rejects a sold-out yellow medium. It closes its own sessions. Run it while the demo is idle.
+
+Receipts are saved on the GPU under `/home/deploy/retail-app/.local/verification/`. Automatic checks do not judge natural voice delivery. Use the browser for the final presentation rehearsal. See [Validation](validation.md) and [Latency](latency.md).
+
+## 5. Delete the site
 
 ```bash
-sudo install -m 644 .local/systemd/retail-tryon.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now retail-tryon
+make destroy
 ```
 
-Services wait up to 20 minutes for initial readiness. Inspect `journalctl -u retail-vlm -u retail-speech -u retail-tryon` for failures. One gateway worker owns the session state and the GPU admission queue. Do not add Uvicorn workers.
+Type the full instance label shown by the command. It verifies ownership, deletes the saved GPU and its local disks, then removes its dedicated firewall and confirms both IDs are absent. It refuses foreign resources, shared firewalls, and unexpected attached volumes, load balancers, or reserved IPs.
 
-From your laptop, create a tunnel:
+Private deletion receipts and SSH keys remain locally. You can deploy the same site name again after a successful deletion. Do not delete `.local/sites/` while resources exist; those files establish ownership and pinned SSH access. Closing the browser, stopping services, or ending the tunnel does not end cloud billing.
 
-```bash
-ssh -N -L 8765:127.0.0.1:8765 YOUR_USER@YOUR_GPU_HOST
-```
+## Another region
 
-Open <http://localhost:8765> and sign in using a retailer key from the host's `.local/gateway.env`. Localhost supports browser microphone access. Use this path for the first functional check. Warm the models using [the latency procedure](latency.md) after each restart. The verified host took about 40 seconds for its first cold greeting despite passing readiness checks.
+Set a new `SITE_NAME` and `LINODE_REGION` in `.env`, then run `make gpu-check` and `make deploy`. Each site is independent. To manage the original site again, restore its name and region in `.env`. Existing site configuration and firewalls are not rewritten to accommodate a different region or IP address.
 
-## 4. Optional public HTTPS
+## When a step fails
 
-This optional configuration has not been verified on the new Amsterdam host. That host permits SSH, HTTP, and HTTPS only from two operator addresses and uses the tunnel above. Keep those access restrictions when repeating that deployment; the certificate-validation setup below is a different access policy.
+| Message or symptom | Next step |
+| --- | --- |
+| `Set LINODE_TOKEN privately` | Read and export the token in this terminal. |
+| No capacity in the region | `make gpu-check`, then choose an available region. |
+| Add this computer to `ADMIN_CIDR` | Include its detected IPv4 `/32` before creating a new site. |
+| Installation stopped | Read the printed `deploy.log`, fix the reported issue, then `make deploy`. |
+| Models still loading or a worker failed | `make gpu-logs`. Initial compilation can take many minutes. |
+| Local port already in use | Change `LOCAL_PORT` in `.env`, then `make tunnel`. |
+| SSH stopped working after moving networks | Use an address already allowed by that site's firewall. Deployment does not silently broaden access. |
+| Saved resource or host identity differs | Inspect the recorded IDs in Cloud Manager. Restore original state; do not disable SSH verification. |
+| A session is occupied during smoke | End that browser conversation, then rerun `make smoke`. |
 
-Point a DNS A record at the host. Add an AAAA record only if the host and firewall are configured for IPv6. Configure a Linode Cloud Firewall with inbound default DROP, SSH restricted to your administrator CIDR, TCP 80 open for ACME certificate validation, and TCP 443 limited to the audience CIDRs. Allow outbound connections for package/model downloads and certificate renewal. Apply equivalent host firewall rules. Never expose ports 8765, 8081, 8082, or 8083.
-
-Build the pinned Caddy image with request rate limiting, then render the service:
-
-```bash
-docker build -t retail-caddy:2.10.2-ratelimit deploy/caddy
-python3.12 scripts/gpu.py services --domain YOUR_DNS_NAME --email YOUR_CERTIFICATE_EMAIL
-docker run --rm --network none -v "$PWD/.local/Caddyfile:/etc/caddy/Caddyfile:ro" \
-  retail-caddy:2.10.2-ratelimit caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
-sudo install -m 644 .local/systemd/retail-caddy.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now retail-caddy
-```
-
-Caddy obtains and renews certificates automatically. It redirects HTTP to HTTPS, limits request size and rate, and blocks operator routes from the public proxy. The public page and `/v1/info` require no key; shopping APIs do. Keep HTTPS restricted to your demo audience.
-
-## 5. Verify the installation
-
-```bash
-set -a
-. .local/gateway.env
-set +a
-.venv/bin/python -m retail_voice.cli preflight
-curl --fail http://127.0.0.1:8765/livez
-ss -lntp
-```
-
-Check public and private ports from a separate host, including IPv6 if enabled. Complete the spoken conversation and image checks in [Validation](validation.md). Preflight checks readiness, configuration and receipts; it does not prove speech quality or GPU capacity under load.
-
-## Update, stop, and recover
-
-Before updating, end active conversations and retain the current source version, `.local` configuration, and dependency receipts. Run `scripts/demo.py setup` after a source update, then restart `retail-gateway`. A model revision or GPU configuration change requires reinstalling as needed and restarting vLLM, speech, try-on, and the gateway in that order. Repeat preflight and a real conversation.
-
-To rotate credentials, run `python3.12 scripts/demo.py rotate-keys` and restart `retail-gateway`. Old keys stop working after restart.
-
-To stop the core stack:
-
-```bash
-sudo systemctl disable --now retail-gateway retail-speech retail-vlm
-```
-
-Stop `retail-caddy` and `retail-tryon` too if installed. Stopping services does not delete models or end the host's cloud charges. Manage or delete the Linode separately.
-
-A failed or interrupted inference can leave `.local/runtime/backend-quarantine.json`. To recover, stop the gateway, restart all model workers, confirm their old work ended and the new workers are ready, then remove only that marker and start the gateway. Never clear it while old CUDA work might still be running. See [Troubleshooting](troubleshooting.md).
+For custom references, explicit installer flags, prepared hosts, and HTTPS, use [advanced deployment](deploy-advanced.md). The current Make command tests use fake cloud responses; the [earlier fresh-site run](fresh-site-verification.md) verifies the underlying installer and GPU runtime.

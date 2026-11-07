@@ -1,0 +1,8 @@
+{
+  "ready": true,
+  "checked_utc": "2026-11-07T02:06:16.456596+00:00",
+  "scope": "restricted_devrel_demo",
+  "blockers": [],
+  "host_advisories": "Explicit --accept-host-advisories required for unfixed findings; no suppression or zero-vulnerability claim.",
+  "evidence": "docs/fresh-site-verification.json"
+}

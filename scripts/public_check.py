@@ -1,6 +1,8 @@
 """Check the files eligible for a public release. Findings never include matched values."""
 
 import argparse
+import hashlib
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -41,8 +43,28 @@ SUFFIXES = {
     ".woff2",
     ".ttf",
     ".jpg",
+    ".png",
+    ".gif",
 }
 SKIP = {"__pycache__", ".mypy_cache", ".ruff_cache"}
+
+
+def demo_reference(root=ROOT):
+    directory = root / "src/retail_voice/data/demo"
+    path = directory / "fictional-person.png"
+    manifest = directory / "person-provenance.json"
+    if directory.is_symlink() or path.is_symlink() or manifest.is_symlink():
+        raise ValueError("The bundled demo person cannot be a symlink")
+    info = json.loads(manifest.read_text())
+    if (
+        info.get("filename") != path.name
+        or info.get("fictional") is not True
+        or info.get("source_images") != []
+        or not 0 < path.stat().st_size <= 2 * 1024 * 1024
+        or hashlib.sha256(path.read_bytes()).hexdigest() != info.get("sha256")
+    ):
+        raise ValueError("The bundled fictional-person image does not match its provenance")
+    return path
 
 
 def release_files(root=ROOT):
@@ -67,6 +89,28 @@ def release_files(root=ROOT):
                 continue
             if path.suffix not in SUFFIXES and path.name not in {"Dockerfile", "Caddyfile"}:
                 raise ValueError(f"Unexpected release file: {path.relative_to(root)}")
+            if path.suffix == ".gif":
+                if path != root / "docs/media/retail-demo.gif":
+                    raise ValueError(f"Unexpected recording: {path.relative_to(root)}")
+                manifest_path = path.with_suffix(".json")
+                if manifest_path.is_symlink():
+                    raise ValueError("The README recording provenance cannot be a symlink")
+                try:
+                    info = json.loads(manifest_path.read_text())
+                except (OSError, ValueError) as exc:
+                    raise ValueError("The README recording needs its reviewed provenance") from exc
+                data = path.read_bytes()
+                if (
+                    info.get("filename") != path.name
+                    or not 0 < len(data) <= 5 * 1024 * 1024
+                    or not data.startswith((b"GIF87a", b"GIF89a"))
+                    or hashlib.sha256(data).hexdigest() != info.get("sha256")
+                ):
+                    raise ValueError("The README recording does not match its provenance")
+            if path.suffix == ".png":
+                if path != root / "src/retail_voice/data/demo/fictional-person.png":
+                    raise ValueError(f"Unexpected person or image asset: {path.relative_to(root)}")
+                demo_reference(root)
             if path.suffix in {".jpg", ".woff2", ".ttf", ".svg"}:
                 permitted = {
                     ".jpg": root / "src/retail_voice/data/products",
@@ -76,12 +120,23 @@ def release_files(root=ROOT):
                 }
                 if path.parent != permitted[path.suffix]:
                     raise ValueError(f"Unexpected binary or image asset: {path.relative_to(root)}")
+            if path.suffix == ".jpg":
+                manifest = json.loads((root / "src/retail_voice/data/assets.json").read_text())
+                matches = [item for item in manifest["assets"] if item["filename"] == path.name]
+                if (
+                    len(matches) != 1
+                    or matches[0].get("provenance") != "synthetic"
+                    or matches[0].get("sha256") != hashlib.sha256(path.read_bytes()).hexdigest()
+                ):
+                    raise ValueError(f"Unapproved product image: {path.relative_to(root)}")
             yield path
 
 
 def check(root=ROOT, publish=False):
     failures = []
     paths = list(release_files(root))
+    if (root / "src/retail_voice/data/demo").exists():
+        demo_reference(root)
     # In a standalone repository, CI must also reject tracked files outside the export set.
     # Do not inspect a parent workspace's unrelated history when preparing a review copy.
     git_root = subprocess.run(

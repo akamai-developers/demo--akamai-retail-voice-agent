@@ -12,7 +12,11 @@ import sys
 import venv
 from pathlib import Path
 
-from demo import LOCAL, PYTHON, ROOT, init, private_write, read_env, run, write_env
+from demo import LOCAL, PYTHON, ROOT, ensure_pip, init, private_write, read_env, run, write_env
+from images import build as build_image
+from public_check import demo_reference
+from security import dependency_audit, host_audit
+from security_tools import ensure as ensure_security_tools
 
 
 def safe_path(value):
@@ -45,10 +49,15 @@ def configure(args):
         request_timeout_seconds=90,
         speaker_index=0,
     )
+    existing_config = LOCAL / "gpu.json"
+    if existing_config.is_file():
+        image = json.loads(existing_config.read_text()).get("vllm_image")
+        if image:
+            settings["vllm_image"] = image
     values = read_env()
     values.update(DEMO_MODE="nvidia", GPU_CONFIG=str(LOCAL / "gpu.json"))
-    if args.reference:
-        reference = safe_path(args.reference)
+    if args.reference or args.demo_person:
+        reference = safe_path(demo_reference(ROOT) if args.demo_person else args.reference)
         if not reference.is_file() or reference.stat().st_size > 2 * 1024 * 1024:
             raise ValueError("Use a readable reference image smaller than 2 MB")
         values.update(
@@ -96,42 +105,37 @@ def install(args):
     runtime = json.loads((ROOT / "src/retail_voice/profiles/nvidia-one-gpu.json").read_text())[
         "runtime"
     ]
-    cuda = runtime["cuda_wheels"]
-    if not re.fullmatch(r"cu[0-9]+", cuda):
-        raise ValueError("Unsupported CUDA wheel index in the model profile")
-    constraints = LOCAL / "gpu-constraints.txt"
-    private_write(
-        constraints, "".join(f"{name}=={runtime[name]}\n" for name in ("torch", "torchaudio"))
-    )
+    ensure_security_tools()
+    dependency_audit()
+    host_audit(accept_host_advisories=args.accept_host_advisories)
     names = ["speech"] + (["tryon"] if env.get("TRYON_MODE") == "live" else [])
     for name in names:
         folder = ROOT / f".{name}-venv"
         python = folder / "bin/python"
         if not python.exists():
             venv.EnvBuilder(with_pip=True).create(folder)
+        ensure_pip(python)
         run(
             python,
             "-m",
             "pip",
             "install",
-            f"torch=={runtime['torch']}",
-            f"torchaudio=={runtime['torchaudio']}",
-            "--index-url",
-            f"https://download.pytorch.org/whl/{cuda}",
-        )
-        run(
-            python,
-            "-m",
-            "pip",
-            "install",
-            "-c",
-            constraints,
+            "--require-hashes",
             "-r",
-            f"deploy/{name}-requirements.txt",
+            f"deploy/{name}-requirements.lock.txt",
         )
-        if name == "tryon":
-            # The worker shares gateway input validation and needs its Python dependencies.
-            run(python, "-m", "pip", "install", "--require-hashes", "-r", "requirements.lock.txt")
+        if name == "speech":
+            run(
+                python,
+                "-m",
+                "pip",
+                "install",
+                "--no-deps",
+                "--no-build-isolation",
+                "nemo_toolkit[asr-only,common-only] @ git+https://github.com/NVIDIA-NeMo/Speech.git@"
+                + runtime["nemo_commit"],
+            )
+            run(python, "scripts/speech_compat.py")
         run(python, "-m", "pip", "check")
         run(
             python,
@@ -154,6 +158,8 @@ def install(args):
             "--accept-model-licenses",
             env=env,
         )
+    settings["vllm_image"] = build_image("vlm")
+    private_write(Path(env["GPU_CONFIG"]), json.dumps(settings, indent=2) + "\n")
     print("Installed. Render services with: python3.12 scripts/gpu.py services")
 
 
@@ -171,7 +177,7 @@ def services(args):
     directory.mkdir(exist_ok=True, mode=0o700)
     common = (
         f"User={user}\nGroup={group}\nWorkingDirectory={ROOT}\n"
-        "UMask=0077\nRestart=on-failure\nRestartSec=15\nTimeoutStartSec=1200\nTimeoutStopSec=60\n"
+        "UMask=0077\nRestart=on-failure\nRestartSec=15\nTimeoutStartSec=2100\nTimeoutStopSec=60\n"
     )
     specs = {
         "vlm": (
@@ -183,13 +189,13 @@ def services(args):
         "speech": (
             "retail-vlm.service",
             "speech.env",
-            f"ExecStartPre={ROOT}/deploy/wait-ready.sh vlm\n"
+            f"ExecStartPre=/bin/sh {ROOT}/deploy/wait-ready.sh vlm\n"
             f"ExecStart={ROOT}/.speech-venv/bin/python -m uvicorn retail_voice.speech_service:create_app --factory --host 127.0.0.1 --port 8082 --no-access-log\n",
         ),
         "gateway": (
             "retail-speech.service",
             "gateway.env",
-            f"ExecStartPre={ROOT}/deploy/wait-ready.sh all\n"
+            f"ExecStartPre=/bin/sh {ROOT}/deploy/wait-ready.sh all\n"
             f"ExecStart={PYTHON} -m uvicorn retail_voice.api:create_app --factory --host 127.0.0.1 --port 8765 --no-access-log\n",
         ),
     }
@@ -197,7 +203,7 @@ def services(args):
         specs["tryon"] = (
             "retail-speech.service",
             "tryon.env",
-            f"ExecStartPre={ROOT}/deploy/wait-ready.sh all\n"
+            f"ExecStartPre=/bin/sh {ROOT}/deploy/wait-ready.sh all\n"
             f"ExecStart={ROOT}/.tryon-venv/bin/python -m uvicorn retail_voice.tryon_service:create_app --factory --host 127.0.0.1 --port 8083 --no-access-log\n",
         )
     if args.domain:
@@ -206,27 +212,68 @@ def services(args):
             or "." not in args.domain
         ):
             raise ValueError("Use a DNS hostname for --domain")
-        if not args.email or not re.fullmatch(r"[A-Za-z0-9._+%-]+@[A-Za-z0-9.-]+", args.email):
+        supplied_tls = bool(args.tls_cert or args.tls_key)
+        if supplied_tls and not (args.tls_cert and args.tls_key):
+            raise ValueError("Supply both --tls-cert and --tls-key")
+        if not supplied_tls and (
+            not args.email or not re.fullmatch(r"[A-Za-z0-9._+%-]+@[A-Za-z0-9.-]+", args.email)
+        ):
             raise ValueError("Supply a valid certificate contact with --email")
         template = (ROOT / "deploy/Caddyfile").read_text()
+        mounts = ""
+        if supplied_tls:
+            certificate, key = safe_path(args.tls_cert), safe_path(args.tls_key)
+            if not certificate.is_file() or not key.is_file():
+                raise ValueError("TLS certificate and key must exist")
+            if key.stat().st_mode & 0o077:
+                raise ValueError("TLS private key must have owner-only permissions")
+            template = template.replace("    email {$ACME_EMAIL}\n", "")
+            template = template.replace(
+                "{$DEMO_DOMAIN} {",
+                "{$DEMO_DOMAIN} {\n    tls /certs/fullchain.pem /certs/private.key",
+            )
+            mounts = (
+                f"--volume {certificate}:/certs/fullchain.pem:ro "
+                f"--volume {key}:/certs/private.key:ro "
+            )
+        image_receipt = LOCAL / "caddy-image.json"
+        if not image_receipt.is_file():
+            raise ValueError("Build and scan the proxy first: python3 scripts/images.py caddy")
+        receipt = json.loads(image_receipt.read_text())
+        image = receipt.get("image", "")
+        if (
+            not re.fullmatch(r"sha256:[0-9a-f]{64}", image)
+            or receipt.get("vulnerability_scan") != "passed"
+        ):
+            raise ValueError("Proxy requires an audited immutable image")
         private_write(
             LOCAL / "Caddyfile",
-            template.replace("{$DEMO_DOMAIN}", args.domain).replace("{$ACME_EMAIL}", args.email),
+            template.replace("{$DEMO_DOMAIN}", args.domain).replace(
+                "{$ACME_EMAIL}", args.email or ""
+            ),
         )
         for name in ("caddy-data", "caddy-config"):
             (LOCAL / name).mkdir(exist_ok=True, mode=0o700)
         specs["caddy"] = (
             "docker.service retail-gateway.service",
             "speech.env",
-            f"ExecStart=/usr/bin/docker run --rm --name retail-caddy --network host "
+            f"ExecStart=/usr/bin/docker run --rm --name retail-caddy --network host --user {os.getuid()}:{os.getgid()} "
+            "--read-only --tmpfs /tmp:rw,nosuid,nodev,noexec,size=16m "
+            "--cap-drop ALL --cap-add NET_BIND_SERVICE --security-opt no-new-privileges "
             f"--volume {LOCAL}/Caddyfile:/etc/caddy/Caddyfile:ro "
             f"--volume {LOCAL}/caddy-data:/data --volume {LOCAL}/caddy-config:/config "
-            "retail-caddy:2.10.2-ratelimit\nExecStop=/usr/bin/docker stop -t 10 retail-caddy\n",
+            f"{mounts}{image}\nExecStop=/usr/bin/docker stop -t 10 retail-caddy\n",
         )
     for name, (after, env_file, commands) in specs.items():
+        hardening = (
+            "NoNewPrivileges=yes\nLimitCORE=0\n"
+            "InaccessiblePaths=-/run/docker.sock -/var/run/docker.sock\n"
+            if name in {"gateway", "speech", "tryon"}
+            else ""
+        )
         unit = (
             f"[Unit]\nDescription=Retail voice {name}\nAfter={after}\nWants={after}\n\n"
-            f"[Service]\n{common}EnvironmentFile={LOCAL / env_file}\n{commands}\n"
+            f"[Service]\n{common}{hardening}EnvironmentFile={LOCAL / env_file}\n{commands}\n"
             "[Install]\nWantedBy=multi-user.target\n"
         )
         private_write(directory / f"retail-{name}.service", unit)
@@ -240,13 +287,24 @@ def main():
     config.add_argument("--site", default="gpu-1")
     config.add_argument("--region", required=True)
     config.add_argument("--model-dir")
-    config.add_argument("--reference")
+    person = config.add_mutually_exclusive_group()
+    person.add_argument("--reference")
+    person.add_argument(
+        "--demo-person", action="store_true", help="Use the bundled fictional person"
+    )
     config.add_argument("--tenant", choices=["retailer-a", "retailer-b"], default="retailer-a")
     setup = commands.add_parser("install")
     setup.add_argument("--accept-model-licenses", action="store_true")
+    setup.add_argument(
+        "--accept-host-advisories",
+        action="store_true",
+        help="Accept documented unfixed host findings for a restricted demo",
+    )
     render = commands.add_parser("services")
     render.add_argument("--domain")
     render.add_argument("--email")
+    render.add_argument("--tls-cert")
+    render.add_argument("--tls-key")
     args = parser.parse_args()
     {"configure": configure, "install": install, "services": services}[args.command](args)
 

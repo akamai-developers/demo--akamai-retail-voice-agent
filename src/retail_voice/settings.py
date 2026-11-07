@@ -19,6 +19,7 @@ class GPUSettings(BaseModel):
     region: str
     model_root: Path
     runtime_dir: Path
+    vllm_image: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
     turn_timeout_seconds: int = Field(default=120, ge=10, le=180)
     request_timeout_seconds: int = Field(default=90, ge=1, le=120)
     speaker_index: int = Field(default=0, ge=0, le=4)
@@ -53,6 +54,12 @@ class GPUSettings(BaseModel):
     @property
     def quarantine_path(self):
         return self.runtime_dir / "backend-quarantine.json"
+
+    @property
+    def vlm_cache_dir(self):
+        if not self.vllm_image:
+            raise ValueError("A scanned model image is required")
+        return self.runtime_dir / ("vlm-cache-" + self.vllm_image.split(":")[1][:16])
 
     @property
     def profile_digest(self):
