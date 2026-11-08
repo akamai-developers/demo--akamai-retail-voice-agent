@@ -27,6 +27,7 @@ class CloudProbeTests(unittest.IsolatedAsyncioTestCase):
         self.ready = True
         self.shared_catalog = False
         self.allow_unauthenticated = False
+        self.tryon_mode = "live"
         self.deleted = []
 
     def response(self, request):
@@ -38,7 +39,7 @@ class CloudProbeTests(unittest.IsolatedAsyncioTestCase):
                     "mode": self.mode,
                     "site": "test-site",
                     "fixture_enabled": self.mode == "mock",
-                    "tryon": {"mode": "live"},
+                    "tryon": {"mode": self.tryon_mode},
                 },
             )
         if path == "/health":
@@ -143,6 +144,37 @@ class CloudProbeTests(unittest.IsolatedAsyncioTestCase):
             async with self.client() as client:
                 with self.assertRaisesRegex(ValueError, "Sold-out"):
                     await probe.shopping(client, self.values, {})
+        self.assertEqual(len(self.deleted), 1)
+
+    async def test_disabled_tryon_requires_disabled_gateway_and_skips_worker(self):
+        values = self.values | {"TRYON_MODE": "disabled"}
+        self.tryon_mode = "disabled"
+        self.ready = False
+        async with self.client() as client:
+            report = await probe.check(client, values)
+        self.assertEqual(report["tryon"], "disabled")
+        self.tryon_mode = "live"
+        async with self.client() as client:
+            with self.assertRaisesRegex(ValueError, "Expected disabled"):
+                await probe.check(client, values)
+
+    async def test_disabled_tryon_smoke_still_checks_cart_and_sold_out(self):
+        cart = [{"variant_id": "a-drizzle-anorak-navy-m", "quantity": 1}]
+        responses = [
+            {"status": "complete", "selected_variant_id": cart[0]["variant_id"]},
+            {"status": "complete", "cart": cart},
+            {"status": "complete", "cart": cart, "answer": "Yellow medium is out of stock."},
+        ]
+        calls = AsyncMock(side_effect=[({}, body, b"synthetic-audio") for body in responses])
+        report = {}
+        with patch("measure_latency.turn", calls):
+            async with self.client() as client:
+                await probe.shopping(client, self.values | {"TRYON_MODE": "disabled"}, report)
+        self.assertEqual(len(report["shopping"]), 3)
+        self.assertEqual(report["preview"], "skipped: TRYON_ENABLED=false")
+        self.assertNotIn("preview_sha256", report)
+        self.assertNotIn("try it on", calls.call_args_list[0].kwargs["text"])
+        self.assertIn("Add the Downpour", calls.call_args_list[2].kwargs["text"])
         self.assertEqual(len(self.deleted), 1)
 
 

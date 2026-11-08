@@ -12,6 +12,7 @@ import sys
 import venv
 from pathlib import Path
 
+import deployment_profile as profile
 from demo import LOCAL, PYTHON, ROOT, ensure_pip, init, private_write, read_env, run, write_env
 from images import build as build_image
 from public_check import demo_reference
@@ -27,6 +28,9 @@ def safe_path(value):
 
 
 def configure(args):
+    runtime_settings = profile.runtime_settings(
+        args.model_profile, args.context_tokens, args.gpu_memory_utilization
+    )
     safe_path(ROOT)
     init()
     for value in (args.site, args.region):
@@ -43,8 +47,8 @@ def configure(args):
         region=args.region,
         model_root=str(model_dir),
         runtime_dir=str(runtime),
-        context_tokens=16384,
-        gpu_memory_utilization=0.7,
+        context_tokens=runtime_settings["context_tokens"],
+        gpu_memory_utilization=runtime_settings["gpu_memory_utilization"],
         turn_timeout_seconds=120,
         request_timeout_seconds=90,
         speaker_index=0,
@@ -56,6 +60,7 @@ def configure(args):
             settings["vllm_image"] = image
     values = read_env()
     values.update(DEMO_MODE="nvidia", GPU_CONFIG=str(LOCAL / "gpu.json"))
+    values.setdefault("TRYON_MODE", "disabled")
     if args.reference or args.demo_person:
         reference = safe_path(demo_reference(ROOT) if args.demo_person else args.reference)
         if not reference.is_file() or reference.stat().st_size > 2 * 1024 * 1024:
@@ -287,6 +292,7 @@ def main():
     config.add_argument("--site", default="gpu-1")
     config.add_argument("--region", required=True)
     config.add_argument("--model-dir")
+    profile.add_arguments(config)
     person = config.add_mutually_exclusive_group()
     person.add_argument("--reference")
     person.add_argument(

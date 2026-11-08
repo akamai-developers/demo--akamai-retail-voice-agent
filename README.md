@@ -9,6 +9,23 @@ Speak to a retail assistant. It finds products, checks stock, shows a clothing p
 
 Recorded on the Amsterdam GPU. This GIF is silent.
 
+## Models and GPU memory
+
+The tested configuration uses **one 96 GB NVIDIA RTX PRO 6000 Blackwell**. All inference runs on that host.
+
+| Work | Model | Size and memory behavior |
+| --- | --- | --- |
+| Speech recognition | [Nemotron Speech Streaming](https://huggingface.co/nvidia/nemotron-speech-streaming-en-0.6b) | 0.6B parameters; runs in the speech worker |
+| Speech synthesis | [Magpie TTS](https://huggingface.co/nvidia/magpie_tts_multilingual_357m) with [NeMo Nano Codec](https://huggingface.co/nvidia/nemo-nano-codec-22khz-1.89kbps-21.5fps) | 357M TTS parameters, plus the codec; shares the speech worker |
+| Reasoning and vision | [Nemotron 3 Nano Omni FP8](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-FP8) | 30B-class model; vendor-reported FP8 footprint: 32.8 GB, before runtime and cache allocations |
+| Clothing preview | [FLUX.2 klein 4B](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B) | 4B diffusion transformer plus text encoder and VAE; BF16 with CPU offload |
+
+Model sizes are vendor descriptions, not measured peak VRAM. All revisions are pinned. ByT5 tokenizer files are also downloaded; its model weights are not. See [model and GPU sizing](docs/gpu-sizing.md) for the complete inventory and measurement procedure.
+
+The default vLLM budget is **70% of GPU memory**, covering model weights, runtime overhead, and KV cache. On the recorded host's 97,887 MiB, this is approximately **66.9 GiB**, leaving **28.7 GiB outside that budget** for speech, try-on, and overhead. This is configured capacity, not a measured free-memory figure.
+
+The default context is **16,384 tokens**, with **FP8 KV cache** and **one simultaneous model request**. KV cache holds attention state for the conversation. vLLM allocates it from the remaining engine budget after accounting for model and runtime memory. Exact cache capacity and per-worker peak VRAM have not been recorded; the full default stack passed the [hardware run](docs/fresh-site-verification.md).
+
 ## Try it locally
 
 Install Python 3.12, then:
@@ -44,6 +61,18 @@ make env                 # writes .env with the defaults; preserves existing set
 ```
 
 The defaults are one 96 GB RTX PRO 6000 Blackwell in Amsterdam, the fictional try-on person, and access from this computer. Change `LINODE_REGION` in `.env` to choose another region. Add your other computer's IPv4 `/32` address to `ADMIN_CIDR` if needed.
+
+GPU and runtime settings are explicit in `.env`:
+
+```dotenv
+GPU_TYPE=g3-gpu-rtxpro6000-blackwell-1
+MODEL_PROFILE=retail-full
+VLLM_MAX_MODEL_LEN=16384
+VLLM_GPU_MEMORY_UTILIZATION=0.70
+TRYON_ENABLED=true
+```
+
+Keep these defaults for the tested demo. `TRYON_ENABLED=false` deploys voice shopping without the image worker. Context and memory tuning apply to a new site and require fresh validation. Only this single RTX PRO plan and model profile are supported; incompatible GPU plans are rejected before provisioning. Existing deployments keep their saved settings on resume. [Sizing and configuration details](docs/gpu-sizing.md).
 
 ```bash
 make gpu-check       # available regions and current prices; creates nothing
@@ -96,11 +125,26 @@ flowchart LR
 
 Each deployment is one independent site. To add a region, use a different site name and region. Functions and automatic site selection belong in a separate repository. The try-on person and catalog are synthetic. Model APIs stay private. See [Architecture](docs/architecture.md).
 
+This deployment does not use Object Storage. Models and caches live on the GPU instance's local disk. Carts and generated previews live in session memory. Deleting the instance removes its downloaded models; ending a session removes its cart and previews.
+
+## Measured performance
+
+Recorded on November 7, 2026, in Amsterdam on the default RTX PRO 6000 configuration:
+
+| Workload | GPU host loopback | Workstation through SSH |
+| --- | ---: | ---: |
+| Warm spoken request | 1.43 s | 1.94 s |
+| Product search | 2.68 s | 3.17 s |
+| Product follow-up | 0.97 s | 1.32 s |
+| Stock check | 1.99 s | 2.47 s |
+
+These are medians of five samples per workload and location, from request submission until complete reply audio arrives. They exclude speaking, silence detection, and playback. They are not San Francisco or concurrent-load measurements. The first uncached clothing preview took **17.74 seconds to generate**, a single separate sample. First model compilation took about **15 minutes**, separate from installation and downloads. [Results and methodology](docs/fresh-site-verification.md#measured-latency); [reproduce the benchmark](docs/latency.md).
+
 ## Verification and security
 
 The underlying deployment and runtime passed fresh GPU installation, browser, voice, preview, cart, and reboot tests in Amsterdam. [Measured results](docs/fresh-site-verification.md) include a 1.94-second warm voice-response median through SSH.
 
-The new Make commands are tested locally with fake cloud responses, including cancellation, resume, and deletion ownership checks. They have not yet provisioned a new GPU. [Validation](docs/validation.md) distinguishes those checks from the earlier hardware run.
+The Make commands have local regression coverage for configuration, cancellation, resume, and deletion ownership checks. The configurable-settings changes have not had a new recorded hardware run. [Validation](docs/validation.md) distinguishes local checks from archived hardware measurements.
 
 This is a restricted developer demo. Deployment asks you to accept the model licenses and documented unfixed Ubuntu advisories. Dependency and container scans still block known findings. Keys, cloud state, logs, and model files stay outside the public export. See [Security](SECURITY.md) and [Third-party notices](THIRD_PARTY_NOTICES.md).
 

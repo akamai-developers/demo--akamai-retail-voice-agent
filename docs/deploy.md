@@ -22,6 +22,13 @@ Review `.env`:
 | `LINODE_REGION` | `nl-ams` | Another region with capacity |
 | `ADMIN_CIDR` | Empty | Additional administrator addresses |
 | `LOCAL_PORT` | `8766` | A different browser port on your computer |
+| `GPU_TYPE` | `g3-gpu-rtxpro6000-blackwell-1` | Explicit plan; only this single RTX PRO plan is supported |
+| `MODEL_PROFILE` | `retail-full` | The pinned model stack |
+| `VLLM_MAX_MODEL_LEN` | `16384` | Context tuning for a new site; range 2048-32768 |
+| `VLLM_GPU_MEMORY_UTILIZATION` | `0.70` | Total vLLM GPU budget; range 0.40-0.85 |
+| `TRYON_ENABLED` | `true` | `false` creates a voice-shopping site without image generation |
+
+Keep the default model and memory settings for the recorded configuration. The accepted tuning ranges do not guarantee that every combination fits. [Models and GPU sizing](gpu-sizing.md) explains model footprints, KV cache, and measurements. Existing `.env` files inherit defaults for omitted settings. Saved GPU/runtime settings cannot change on resume; use a new site name for an experiment.
 
 An empty `ADMIN_CIDR` uses this computer's detected public IPv4 address. For two computers, enter both public IPv4 addresses with `/32`, separated by commas. The list must include the computer running deployment. Both cloud and host firewalls allow TCP 22, 80, and 443 only from that list. Private application and model ports remain closed externally; IPv6 ingress is denied.
 
@@ -32,11 +39,11 @@ make gpu-check
 make deploy
 ```
 
-The capacity table shows current regional prices and availability for the validated 96 GB GPU plan. If Amsterdam has no capacity, choose another available region in `.env`.
+The capacity table shows current regional prices and availability for `GPU_TYPE`, plus the selected runtime settings. Unsupported plans are rejected before provisioning. If Amsterdam has no capacity, choose another available region in `.env`.
 
 Deployment shows the selected site, hourly price, and allowed addresses. Type `deploy` to proceed. This also accepts the model licenses in [Third-party notices](../THIRD_PARTY_NOTICES.md) and the restricted-demo host exception in [Security](../SECURITY.md). Available host fixes, missing scan coverage, and dependency or container findings still stop installation.
 
-The command creates a private SSH key, provisions the firewall and GPU, installs Ubuntu updates and the driver, reboots, downloads the models, builds scanned images, and starts the services. It waits for readiness and warms speech and reasoning with a synthetic request. Try-on uses the bundled fictional person.
+The command creates a private SSH key, provisions the firewall and GPU, installs Ubuntu updates and the driver, reboots, downloads the models, builds scanned images, and starts the services. It waits for readiness and warms speech and reasoning with a synthetic request. Try-on uses the bundled fictional person when enabled.
 
 Plan for **45-90 minutes for a first deployment**. [Unverified: Hardware Run Pending] This total is a planning estimate, not an end-to-end measurement. Download speed, builds, and security scans can extend it. First compilation alone took about 15 minutes in the recorded hardware run. Resuming skips completed steps, so the initial estimate does not apply to a resume.
 
@@ -70,6 +77,8 @@ make smoke
 ```
 
 These commands use SSH directly; they do not depend on the browser tunnel. `cloud-check` checks pinned models, GPU visibility, worker readiness, authentication, and separate retailer catalogs. `smoke` uses a synthetic spoken request, generates a live preview, adds the previewed navy medium once, and rejects a sold-out yellow medium. It closes its own sessions. Run it while the demo is idle.
+
+For `TRYON_ENABLED=false`, the smoke check selects navy medium without generating an image, adds it once, and rejects the sold-out variant. The receipt explicitly records the skipped preview.
 
 Receipts are saved on the GPU under `/home/deploy/retail-app/.local/verification/`. Automatic checks do not judge natural voice delivery. Use the browser for the final presentation rehearsal. See [Validation](validation.md) and [Latency](latency.md).
 

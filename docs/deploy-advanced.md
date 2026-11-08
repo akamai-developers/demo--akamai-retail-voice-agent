@@ -10,6 +10,10 @@ For automation or a permitted private reference, use `scripts/site.py` directly.
 SITE_ARGS=(
   --site retail-ams
   --region nl-ams
+  --gpu-type g3-gpu-rtxpro6000-blackwell-1
+  --model-profile retail-full
+  --context-tokens 16384
+  --gpu-memory-utilization 0.70
   --demo-person
   --ssh-key "$HOME/.ssh/id_ed25519"
   --admin-cidr YOUR_HOME_PUBLIC_IPV4/32
@@ -21,6 +25,8 @@ python3.12 scripts/site.py apply "${SITE_ARGS[@]}" \
 ```
 
 Replace `--demo-person` with `--reference /absolute/private/person.jpg --tenant retailer-a` for your own permitted photo, or omit both for voice shopping only. Keep personal photos outside the source tree. The Make workflow uses the bundled fictional person.
+
+`scripts/gpu.py configure` accepts the same model-profile, context, and GPU-memory flags on a prepared host. Their defaults match the recorded run. The supported cloud plan is one 96 GB RTX PRO 6000; context and memory changes require validation. See [GPU sizing](gpu-sizing.md).
 
 Maintainers testing an unpublished candidate can add `--verify-candidate`. All runtime scans remain active. The host-advisory exception is separate and accepts only documented unfixed host findings.
 

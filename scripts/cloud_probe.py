@@ -39,11 +39,14 @@ async def check(client, values):
         response.raise_for_status()
         if response.json().get("ready") is not True or info.get("tryon", {}).get("mode") != "live":
             raise ValueError("The live preview worker is not ready")
+    elif info.get("tryon", {}).get("mode") != "disabled":
+        raise ValueError("Expected disabled try-on for this deployment")
     return {
         "mode": info["mode"],
         "site": info["site"],
         "authentication": "passed",
         "catalog_isolation": "passed",
+        "tryon": "live" if values.get("TRYON_MODE") == "live" else "disabled",
     }
 
 
@@ -124,10 +127,14 @@ async def shopping(client, values, report):
     )
     response.raise_for_status()
     session = response.json()
+    live_preview = values.get("TRYON_MODE") == "live"
     steps = [
-        "Show me the Drizzle Anorak in navy medium. Let me try it on.",
+        "Show me the Drizzle Anorak in navy medium."
+        + (" Let me try it on." if live_preview else " Check stock."),
         "Looks good. Add it to my cart.",
-        "Try the Downpour Packable Shell in yellow medium.",
+        "Try the Downpour Packable Shell in yellow medium."
+        if live_preview
+        else "Add the Downpour Packable Shell in yellow medium to my cart.",
     ]
     records = []
     saved_cart = None
@@ -142,6 +149,14 @@ async def shopping(client, values, report):
                 selected_product_id=body.get("selected_product_id"),
             )
             if index == 0:
+                if not live_preview:
+                    if (
+                        body.get("preview")
+                        or body.get("selected_variant_id") != "a-drizzle-anorak-navy-m"
+                    ):
+                        raise ValueError("Expected navy medium selection without a preview")
+                    report["preview"] = "skipped: TRYON_ENABLED=false"
+                    continue
                 if (
                     body.get("preview", {}).get("kind") != "live"
                     or body.get("selected_variant_id") != "a-drizzle-anorak-navy-m"

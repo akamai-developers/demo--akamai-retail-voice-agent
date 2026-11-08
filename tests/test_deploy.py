@@ -96,6 +96,43 @@ class DeploymentTests(unittest.TestCase):
         self.command("gpu.py", "configure", "--region", "bad\nvalue", success=False)
         self.assertFalse((self.root / ".local/gpu.json").exists())
 
+    def test_explicit_runtime_settings_reach_private_host_config(self):
+        self.command(
+            "gpu.py",
+            "configure",
+            "--region",
+            "nl-ams",
+            "--model-profile",
+            "retail-full",
+            "--context-tokens",
+            "8192",
+            "--gpu-memory-utilization",
+            "0.65",
+        )
+        config = json.loads((self.root / ".local/gpu.json").read_text())
+        self.assertEqual(config["context_tokens"], 8192)
+        self.assertEqual(config["gpu_memory_utilization"], 0.65)
+        values = dict(
+            line.split("=", 1)
+            for line in (self.root / ".local/gateway.env").read_text().splitlines()
+        )
+        self.assertEqual(json.loads(values["TRYON_MODE"]), "disabled")
+        if os.getuid() != 0:
+            self.command("gpu.py", "services")
+            self.assertFalse((self.root / ".local/systemd/retail-tryon.service").exists())
+
+    def test_invalid_runtime_settings_do_not_overwrite_host_config(self):
+        self.command("gpu.py", "configure", "--region", "nl-ams")
+        path = self.root / ".local/gpu.json"
+        before = path.read_bytes()
+        for flag, value in (
+            ("--model-profile", "compact"),
+            ("--context-tokens", "50000"),
+            ("--gpu-memory-utilization", "nan"),
+        ):
+            self.command("gpu.py", "configure", "--region", "nl-ams", flag, value, success=False)
+            self.assertEqual(path.read_bytes(), before)
+
     def test_model_download_requires_explicit_acceptance(self):
         result = self.command("gpu.py", "install", success=False)
         self.assertIn("accept-model-licenses", result.stderr)

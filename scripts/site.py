@@ -16,6 +16,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+import deployment_profile as profile
 from demo import LOCAL, ROOT, init, private_write
 from public_check import demo_reference
 from release import export
@@ -68,6 +69,10 @@ class Cloud:
 
 
 def configuration(args):
+    profile.validate_gpu(args.gpu_type)
+    runtime = profile.runtime_settings(
+        args.model_profile, args.context_tokens, args.gpu_memory_utilization
+    )
     if not re.fullmatch(r"[a-z][a-z0-9-]{2,40}", args.site):
         raise ValueError("Use a lowercase site name of 3 to 41 characters")
     if not re.fullmatch(r"[a-z][a-z0-9-]{2,40}", args.region):
@@ -104,6 +109,7 @@ def configuration(args):
         ):
             raise ValueError("Use your permitted JPEG or PNG reference under 2 MB")
     return {
+        **runtime,
         "site": args.site,
         "region": args.region,
         "gpu_type": args.gpu_type,
@@ -255,7 +261,7 @@ def apply(cloud, config, args, folder, available=True):
         if state_path.exists()
         else {"owner": secrets.token_hex(16), "config": config}
     )
-    if state["config"] != config:
+    if profile.with_runtime_defaults(state["config"]) != profile.with_runtime_defaults(config):
         raise ValueError(
             "Site inputs are immutable; use a different site name for another deployment"
         )
@@ -390,6 +396,7 @@ def apply(cloud, config, args, folder, available=True):
             "--region",
             config["region"],
         ]
+        command.extend(profile.arguments(profile.with_runtime_defaults(config)))
         if args.reference:
             photo = Path(args.reference).expanduser().resolve()
             name = "retail-reference" + photo.suffix.lower()
@@ -446,7 +453,8 @@ def main():
     parser.add_argument("command", choices=["plan", "apply"])
     parser.add_argument("--site", required=True)
     parser.add_argument("--region", required=True)
-    parser.add_argument("--gpu-type", default="g3-gpu-rtxpro6000-blackwell-1")
+    parser.add_argument("--gpu-type", default=profile.GPU_TYPE)
+    profile.add_arguments(parser)
     parser.add_argument("--ssh-key", required=True)
     parser.add_argument("--admin-cidr", action="append", required=True)
     person = parser.add_mutually_exclusive_group()
@@ -482,6 +490,10 @@ def main():
                 "site": config["site"],
                 "region": config["region"],
                 "gpu_type": config["gpu_type"],
+                "model_profile": config["model_profile"],
+                "context_tokens": config["context_tokens"],
+                "gpu_memory_utilization": config["gpu_memory_utilization"],
+                "tryon_enabled": bool(config["reference_sha256"]),
                 "price": price,
                 "available": available,
                 "ports": "22,80,443",

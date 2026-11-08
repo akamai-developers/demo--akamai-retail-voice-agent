@@ -20,6 +20,7 @@ import urllib.request
 from contextlib import contextmanager
 from datetime import datetime, timezone
 
+import deployment_profile as profile
 from demo import LOCAL, ROOT, init, private_write
 
 spec = importlib.util.spec_from_file_location("site_deploy", ROOT / "scripts/site.py")
@@ -30,8 +31,12 @@ DEFAULTS = {
     "LINODE_REGION": "nl-ams",
     "ADMIN_CIDR": "",
     "LOCAL_PORT": "8766",
+    "GPU_TYPE": profile.GPU_TYPE,
+    "MODEL_PROFILE": profile.MODEL_PROFILE,
+    "VLLM_MAX_MODEL_LEN": str(profile.CONTEXT_TOKENS),
+    "VLLM_GPU_MEMORY_UTILIZATION": str(profile.MEMORY_FRACTION),
+    "TRYON_ENABLED": "true",
 }
-GPU = "g3-gpu-rtxpro6000-blackwell-1"
 HEARTBEAT_SECONDS = 30
 
 
@@ -102,7 +107,19 @@ def settings():
             raise ValueError(f"{key} must contain 3 to 41 lowercase letters, digits or hyphens")
     if not values["LOCAL_PORT"].isdigit() or not 1024 <= int(values["LOCAL_PORT"]) <= 65535:
         raise ValueError("LOCAL_PORT must be between 1024 and 65535")
+    selected_runtime(values)
+    values["TRYON_ENABLED"] = values["TRYON_ENABLED"].lower()
+    if values["TRYON_ENABLED"] not in {"true", "false"}:
+        raise ValueError("TRYON_ENABLED must be true or false")
     return values
+
+
+def selected_runtime(values):
+    return profile.runtime_settings(
+        values["MODEL_PROFILE"],
+        values["VLLM_MAX_MODEL_LEN"],
+        values["VLLM_GPU_MEMORY_UTILIZATION"],
+    )
 
 
 def folder_for(values, create=False):
@@ -169,9 +186,9 @@ def audience(raw, detected):
     return sorted(set(addresses))
 
 
-def capacity(cloud, region):
+def capacity(cloud, region, gpu_type):
     rows = cloud.rows(f"/regions/{region}/availability")
-    return any(row["plan"] == GPU and row["available"] for row in rows)
+    return any(row["plan"] == gpu_type and row["available"] for row in rows)
 
 
 def price(plan, region):
@@ -181,16 +198,21 @@ def price(plan, region):
 
 
 def gpu_check(values, cloud):
-    plan = cloud.request("/linode/types/" + GPU)
+    profile.validate_gpu(values["GPU_TYPE"])
+    runtime = selected_runtime(values)
+    plan = cloud.request("/linode/types/" + values["GPU_TYPE"])
     regions = [
         r
         for r in cloud.rows("/regions")
         if "GPU Linodes" in r.get("capabilities", []) or r["id"] == values["LINODE_REGION"]
     ]
     with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
-        futures = {r["id"]: pool.submit(capacity, cloud, r["id"]) for r in regions}
+        futures = {
+            r["id"]: pool.submit(capacity, cloud, r["id"], values["GPU_TYPE"]) for r in regions
+        }
         available = {region: future.result() for region, future in futures.items()}
-    print(f"{GPU}: one RTX PRO 6000 Blackwell, 96 GB VRAM")
+    print(f"{values['GPU_TYPE']}: one RTX PRO 6000 Blackwell, 96 GB VRAM")
+    print_runtime(runtime, values["TRYON_ENABLED"] == "true")
     print(f"{'Region':18} {'Available':10} USD/hour")
     for region, ready in sorted(available.items()):
         marker = "  <- LINODE_REGION" if region == values["LINODE_REGION"] else ""
@@ -283,6 +305,11 @@ def probe(values, command):
 def access_details(values):
     folder, state = load_state(values)
     print(f"Site: retail-{state['config']['site']} ({state['config']['region']})")
+    print("GPU plan: " + state["config"].get("gpu_type", profile.GPU_TYPE))
+    print_runtime(
+        profile.with_runtime_defaults(state["config"]),
+        state["config"].get("demo_person", True) or bool(state["config"].get("reference_sha256")),
+    )
     if state.get("instance"):
         print(f"Instance ID: {state['instance']}")
     if (folder / "known_hosts").exists() or (folder / "known_hosts").is_symlink():
@@ -321,10 +348,27 @@ def status(values):
         )
 
 
+def print_runtime(runtime, tryon):
+    print(
+        f"Model profile: {runtime['model_profile']}; context: {runtime['context_tokens']} tokens; "
+        f"vLLM GPU budget: {runtime['gpu_memory_utilization']:.0%}; "
+        f"FP8 KV cache; try-on: {'enabled' if tryon else 'disabled'}"
+    )
+    if (runtime["context_tokens"], runtime["gpu_memory_utilization"]) != (
+        profile.CONTEXT_TOKENS,
+        profile.MEMORY_FRACTION,
+    ):
+        print(
+            "Custom memory/context settings have not been hardware-validated. Run make smoke after deployment."
+        )
+
+
 def deploy(values, cloud):
+    profile.validate_gpu(values["GPU_TYPE"])
+    runtime = selected_runtime(values)
     require_tools()
     site.require_release_clearance()
-    plan = cloud.request("/linode/types/" + GPU)
+    plan = cloud.request("/linode/types/" + values["GPU_TYPE"])
     folder = folder_for(values)
     saved = (
         json.loads((folder / "state.json").read_text())
@@ -335,7 +379,18 @@ def deploy(values, cloud):
         raise ValueError(
             "An existing site's region cannot change. Set a new SITE_NAME for another region"
         )
-    if not capacity(cloud, values["LINODE_REGION"]) and not (
+    if saved:
+        existing = profile.with_runtime_defaults(saved["config"])
+        if (
+            existing.get("gpu_type", profile.GPU_TYPE) != values["GPU_TYPE"]
+            or any(existing[name] != value for name, value in runtime.items())
+            or existing.get("demo_person", True) != (values["TRYON_ENABLED"] == "true")
+        ):
+            raise ValueError(
+                "Saved GPU, model, context, memory and try-on settings cannot change on resume. "
+                "Restore the original settings or use a new SITE_NAME."
+            )
+    if not capacity(cloud, values["LINODE_REGION"], values["GPU_TYPE"]) and not (
         saved and (saved.get("instance") or saved.get("instance_pending"))
     ):
         raise ValueError(
@@ -354,6 +409,7 @@ def deploy(values, cloud):
         f"Site: {values['SITE_NAME']} in {values['LINODE_REGION']}; {price(plan, values['LINODE_REGION'])['hourly']} USD/hour"
     )
     print("One 96 GB GPU and one dedicated firewall. Allowed IPv4: " + ", ".join(addresses))
+    print_runtime(runtime, values["TRYON_ENABLED"] == "true")
     print("Estimated first deployment: 45-90 minutes. Planning estimate; total not measured yet.")
     print(
         "Downloads, builds and scans vary. First model compilation took about 15 minutes in the prior run."
@@ -385,12 +441,16 @@ def deploy(values, cloud):
         values["SITE_NAME"],
         "--region",
         values["LINODE_REGION"],
-        "--demo-person",
+        "--gpu-type",
+        values["GPU_TYPE"],
         "--ssh-key",
         str(key),
         "--accept-model-licenses",
         "--accept-host-advisories",
     ]
+    arguments.extend(profile.arguments(runtime))
+    if values["TRYON_ENABLED"] == "true":
+        arguments.append("--demo-person")
     for address in addresses:
         arguments.extend(["--admin-cidr", address])
     with DeploymentProgress() as progress:

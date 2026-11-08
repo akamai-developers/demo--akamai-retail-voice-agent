@@ -1,12 +1,16 @@
 """Provisioning tests use a fake cloud and cannot create billable resources."""
 
+import base64
+import contextlib
 import importlib.util
+import io
 import json
 import sys
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
@@ -159,6 +163,82 @@ class SiteTests(unittest.TestCase):
             self.assertGreaterEqual(
                 len(security.pins(root / lock)), 1 if "installer-" in lock else 51
             )
+
+    def test_site_installer_forwards_runtime_and_resumes_legacy_defaults(self):
+        for legacy in (False, True):
+            with tempfile.TemporaryDirectory() as directory:
+                folder = Path(directory)
+                key = folder / "client_ed25519"
+                key.write_text("synthetic private fixture")
+                key.chmod(0o600)
+                public = (
+                    "ssh-ed25519 "
+                    + base64.b64encode(
+                        b"\x00\x00\x00\x0bssh-ed25519\x00\x00\x00\x20" + bytes(32)
+                    ).decode()
+                )
+                key.with_suffix(".pub").write_text(public)
+                args = SimpleNamespace(
+                    site="test-site",
+                    region="nl-ams",
+                    gpu_type=site.profile.GPU_TYPE,
+                    model_profile="retail-full",
+                    context_tokens=16384 if legacy else 8192,
+                    gpu_memory_utilization=0.70 if legacy else 0.65,
+                    ssh_key=str(key),
+                    admin_cidr=["8.8.8.8/32"],
+                    reference=None,
+                    demo_person=False,
+                    tenant="retailer-a",
+                    accept_host_advisories=True,
+                )
+                config = site.configuration(args)
+                saved_config = dict(config)
+                if legacy:
+                    for name in ("model_profile", "context_tokens", "gpu_memory_utilization"):
+                        saved_config.pop(name)
+                state = {
+                    "owner": "a" * 32,
+                    "config": saved_config,
+                    "instance": 101,
+                    "firewall": 202,
+                    "bootstrapped": True,
+                    "rebooted": True,
+                    "kernels_cleaned": True,
+                }
+                (folder / "state.json").write_text(json.dumps(state))
+                (folder / "host_ed25519").write_text("synthetic host fixture")
+                (folder / "host_ed25519.pub").write_text(public)
+                cloud = Mock()
+                cloud.request.return_value = site.firewall_rules(config)
+                remote = Mock(host="deploy@8.8.8.8", options=[])
+                with (
+                    patch.object(site, "ensure_auditor"),
+                    patch.object(site, "dependency_audit"),
+                    patch.object(
+                        site,
+                        "ensure_resource",
+                        side_effect=[
+                            {"id": 202, "status": "enabled"},
+                            {
+                                "id": 101,
+                                "region": "nl-ams",
+                                "type": args.gpu_type,
+                                "ipv4": ["8.8.8.8"],
+                            },
+                        ],
+                    ),
+                    patch.object(site, "Remote", return_value=remote),
+                    patch.object(site, "export"),
+                    contextlib.redirect_stdout(io.StringIO()),
+                ):
+                    site.apply(cloud, config, args, folder)
+                commands = "\n".join(call.args[0] for call in remote.run.call_args_list)
+                self.assertIn(f"--context-tokens {args.context_tokens}", commands)
+                self.assertIn(f"--gpu-memory-utilization {args.gpu_memory_utilization}", commands)
+                self.assertIn("--model-profile retail-full", commands)
+                self.assertNotIn("--demo-person", commands)
+                self.assertTrue(json.loads((folder / "state.json").read_text())["installed"])
 
 
 if __name__ == "__main__":

@@ -167,6 +167,9 @@ class CloudCommandTests(unittest.TestCase):
         self.assertIn(self.state["config"]["ssh_key"], arguments)
         self.assertIn("8.8.8.8/32", arguments)
         self.assertIn("--accept-host-advisories", arguments)
+        self.assertEqual(arguments[arguments.index("--gpu-type") + 1], cloud.DEFAULTS["GPU_TYPE"])
+        self.assertEqual(arguments[arguments.index("--context-tokens") + 1], "16384")
+        self.assertEqual(arguments[arguments.index("--gpu-memory-utilization") + 1], "0.7")
         probe.assert_called_once_with(self.values, "warmup")
         key = self.folder / "shopper-key.txt"
         self.assertEqual(key.read_text().strip(), "x" * 43)
@@ -421,6 +424,100 @@ class CloudCommandTests(unittest.TestCase):
             cloud.deploy(self.values, connection)
         install.assert_called_once()
         self.assertIn("apply", install.call_args.args[0])
+
+    def test_invalid_runtime_settings_fail_without_cloud_access(self):
+        for name, value in (
+            ("MODEL_PROFILE", "compact"),
+            ("VLLM_MAX_MODEL_LEN", "0"),
+            ("VLLM_MAX_MODEL_LEN", "65536"),
+            ("VLLM_MAX_MODEL_LEN", "16.5"),
+            ("VLLM_GPU_MEMORY_UTILIZATION", "nan"),
+            ("VLLM_GPU_MEMORY_UTILIZATION", "0.9"),
+            ("TRYON_ENABLED", "perhaps"),
+        ):
+            with patch.dict(os.environ, {name: value}), self.assertRaises(ValueError):
+                cloud.settings()
+        for method in (cloud.deploy, cloud.gpu_check):
+            connection = Mock()
+            for plan in ("g2-gpu-rtx4000a1-m", "g3-gpu-rtxpro6000-blackwell-2"):
+                with self.assertRaisesRegex(ValueError, "not supported"):
+                    method(self.values | {"GPU_TYPE": plan}, connection)
+            connection.request.assert_not_called()
+            connection.rows.assert_not_called()
+
+    def test_resume_rejects_changed_runtime_before_install_or_confirmation(self):
+        connection = Mock()
+        for overrides in (
+            {"VLLM_MAX_MODEL_LEN": "8192"},
+            {"VLLM_GPU_MEMORY_UTILIZATION": "0.65"},
+            {"TRYON_ENABLED": "false"},
+        ):
+            with (
+                patch.object(cloud, "require_tools"),
+                patch.object(cloud.site, "require_release_clearance"),
+                patch("builtins.input") as confirm,
+                patch.object(cloud, "installer") as install,
+                self.assertRaisesRegex(ValueError, "cannot change on resume"),
+            ):
+                cloud.deploy(self.values | overrides, connection)
+            confirm.assert_not_called()
+            install.assert_not_called()
+
+    def test_fresh_site_passes_custom_runtime_and_disabled_tryon_to_installer(self):
+        (self.folder / "state.json").unlink()
+        (self.folder / "client_ed25519").write_text("synthetic fixture")
+        (self.folder / "known_hosts").write_text("203.0.113.10 ssh-ed25519 synthetic\n")
+        connection = Mock()
+        connection.request.return_value = {"price": {"hourly": 3.6}}
+        remote = Mock()
+        remote.run.return_value = SimpleNamespace(stdout="x" * 43 + "\n")
+        self.state["config"].update(
+            context_tokens=8192,
+            gpu_memory_utilization=0.65,
+            model_profile="retail-full",
+            demo_person=False,
+        )
+        with (
+            patch.object(cloud, "require_tools"),
+            patch.object(cloud.site, "require_release_clearance"),
+            patch.object(cloud, "capacity", return_value=True) as capacity,
+            patch.object(cloud, "public_ipv4", return_value="8.8.8.8/32"),
+            patch("builtins.input", return_value="deploy"),
+            patch.object(cloud, "installer", side_effect=lambda *args: self.save()) as install,
+            patch.object(cloud, "remote_for", return_value=(self.folder, remote)),
+            patch.object(cloud, "probe"),
+            patch.object(cloud, "init"),
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            cloud.deploy(
+                self.values
+                | {
+                    "VLLM_MAX_MODEL_LEN": "8192",
+                    "VLLM_GPU_MEMORY_UTILIZATION": "0.65",
+                    "TRYON_ENABLED": "false",
+                },
+                connection,
+            )
+        capacity.assert_called_once_with(connection, "nl-ams", cloud.DEFAULTS["GPU_TYPE"])
+        args = install.call_args.args[0]
+        self.assertNotIn("--demo-person", args)
+        self.assertEqual(args[args.index("--context-tokens") + 1], "8192")
+        self.assertEqual(args[args.index("--gpu-memory-utilization") + 1], "0.65")
+
+    def test_gpu_check_uses_selected_plan_for_price_and_capacity(self):
+        connection = Mock()
+        connection.request.return_value = {"price": {"hourly": 3.6}}
+        connection.rows.side_effect = lambda path: (
+            [{"id": "nl-ams", "capabilities": ["GPU Linodes"]}]
+            if path == "/regions"
+            else [{"plan": self.values["GPU_TYPE"], "available": True}]
+        )
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            cloud.gpu_check(self.values, connection)
+        connection.request.assert_called_once_with("/linode/types/" + self.values["GPU_TYPE"])
+        self.assertIn("nl-ams", output.getvalue())
+        self.assertIn("16384 tokens", output.getvalue())
 
 
 if __name__ == "__main__":
